@@ -55,7 +55,20 @@ module OpenStreetMap
         raise TypeError.new('id needs to be a positive integer') unless(id.kind_of?(Fixnum) && id > 0)
         response = get("/#{type}/#{id}")
         check_response_codes(response)
-        OpenStreetMap::Node.new(response['osm']['node'])
+        case type
+        when 'node'
+          OpenStreetMap::Node.new(response['osm']['node'])
+        when 'way'
+          OpenStreetMap::Way.new(response['osm']['way'])
+        end
+    end
+
+    def self.get_node(id)
+      get_object('node', id)
+    end
+
+    def self.get_way(id)
+      get_object('way', id)
     end
 
     private
