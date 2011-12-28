@@ -3,7 +3,7 @@ require 'open_street_map'
 describe 'OpenStreetMap::Node' do
 
   let :node do
-    OpenStreetMap::Node.new(:id => "123", :lat => "52.2", :lon => "13.4", :changeset => "12", :user => "fred", :uid => "123", :visible => true, :timestamp => "2005-07-30T14:27:12+01:00" )
+    OpenStreetMap::Node.new(:id => "123", :lat => "52.2", :lon => "13.4", :changeset => "12", :user => "fred", :uid => "123", :visible => true, :timestamp => "2005-07-30T14:27:12+01:00")
   end
 
   it "should have an id attribute set from attributes" do

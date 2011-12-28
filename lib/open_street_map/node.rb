@@ -1,13 +1,13 @@
 module OpenStreetMap
   # OpenStreetMap Node.
   #
-  # To create a new OSM::Node object:
-  #   node = OSM::Node.new(17, 'someuser', '2007-10-31T23:48:54Z', 7.4, 53.2)
+  # To create a new OpenStreetMap::Node object:
+  #   node = OpenStreetMap::Node.new(:id => "123", :lat => "52.2", :lon => "13.4", :changeset => "12", :user => "fred", :uid => "123", :visible => true, :timestamp => "2005-07-30T14:27:12+01:00")
   #
   # To get a node from the API:
-  #   node = OSM::Node.from_api(17)
+  #   node = OpenStreetMap::Node.from_api(17)
   #
-  class Node < OsmObject
+  class Node < Element
 
     # Longitude in decimal degrees
     attr_reader :lon

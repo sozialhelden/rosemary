@@ -1,6 +1,6 @@
 module OpenStreetMap
   # This is a virtual parent class for the OSM objects Node, Way and Relation.
-  class OsmObject
+  class Element
 
     # To give out unique IDs to the objects we keep a counter that
     # gets decreased every time we use it. See the _next_id method.
@@ -34,14 +34,14 @@ module OpenStreetMap
     attr_reader :tags
 
 
-    # Get OSM::OsmObject from API
-    def self.from_api(id, api=OSM::API.new) #:nodoc:
-        raise NotImplementedError.new('OsmObject is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::OsmObject
+    # Get OpenStreetMap::Element from API
+    def self.from_api(id, api=OpenStreetMap::API.new) #:nodoc:
+        raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::Element
         api.get_object(type, id)
     end
 
     def initialize(attrs = {}) #:nodoc:
-      raise NotImplementedError.new('OsmObject is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::OsmObject
+      raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::Element
       attrs = {'version' => 1, 'uid' => 1}.merge(attrs.stringify_keys!)
       @id         = attrs['id'].to_i
       @version    = attrs['version'].to_i
@@ -65,7 +65,7 @@ module OpenStreetMap
 
     # The list of attributes for this object
     def attribute_list # :nodoc:
-      [:id, :version, :uid, :user, :timestamp]
+      [:id, :version, :uid, :user, :timestamp, :tags]
     end
 
     # Returns a hash of all non-nil attributes of this object.
@@ -141,23 +141,23 @@ module OpenStreetMap
 
     # Get all relations from the API that have his object as members.
     #
-    # The optional parameter is an OSM::API object. If none is specified
+    # The optional parameter is an OpenStreetMap::API object. If none is specified
     # the default OSM API is used.
     #
     # Returns an array of Relation objects or an empty array.
     #
-    def get_relations_from_api(api=OSM::API.new)
+    def get_relations_from_api(api=OpenStreetMap::API.new)
       api.get_relations_referring_to_object(type, self.id.to_i)
     end
 
     # Get the history of this object from the API.
     #
-    # The optional parameter is an OSM::API object. If none is specified
+    # The optional parameter is an OpenStreetMap::API object. If none is specified
     # the default OSM API is used.
     #
-    # Returns an array of OSM::Node, OSM::Way, or OSM::Relation objects
+    # Returns an array of OpenStreetMap::Node, OpenStreetMap::Way, or OpenStreetMap::Relation objects
     # with all the versions.
-    def get_history_from_api(api=OSM::API.new)
+    def get_history_from_api(api=OpenStreetMap::API.new)
       api.get_history(type, self.id.to_i)
     end
 
@@ -165,7 +165,7 @@ module OpenStreetMap
     # instance obj.name is the same as obj.tags['name']. This works
     # for getting and setting tags.
     #
-    #   node = OSM::Node.new
+    #   node = OpenStreetMap::Node.new
     #   node.add_tags( 'highway' => 'residential', 'name' => 'Main Street' )
     #   node.highway                   #=> 'residential'
     #   node.highway = 'unclassified'  #=> 'unclassified'

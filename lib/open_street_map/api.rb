@@ -1,7 +1,7 @@
-# Contains the OSM::API class
+# Contains the OpenStreetMap::API class
 
 require 'httparty'
-require 'open_street_map/osm_object'
+require 'open_street_map/element'
 require 'open_street_map/node'
 
 module OpenStreetMap
@@ -30,15 +30,15 @@ module OpenStreetMap
   # Unspecified API server error.
   class APIServerError < APIError; end # 500
 
-  # The OSM::API class handles all calls to the OpenStreetMap API.
+  # The OpenStreetMap::API class handles all calls to the OpenStreetMap API.
   #
   # Usage:
   #   require 'open_street_map/api'
   #
   #   @node = OpenStreetMap::Api.get_object('node', 1234)
   #
-  # In most cases you can use the more convenient methods on the OSM::Node, OSM::Way,
-  # or OSM::Relation objects.
+  # In most cases you can use the more convenient methods on the OpenStreetMap::Node, OpenStreetMap::Way,
+  # or OpenStreetMap::Relation objects.
   #
   class Api
     include HTTParty
@@ -48,7 +48,7 @@ module OpenStreetMap
 
     # Get an object ('node', 'way', or 'relation') with specified ID from API.
     #
-    # call-seq: get_object(type, id) -> OSM::Object
+    # call-seq: get_object(type, id) -> OpenStreetMap::Object
     #
     def self.get_object(type, id)
         raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation)$/
