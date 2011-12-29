@@ -3,3 +3,17 @@ LICENSE
 Manifest
 README.md
 Rakefile
+lib/hash.rb
+lib/open_street_map/api.rb
+lib/open_street_map/basic_auth_client.rb
+lib/open_street_map/element.rb
+lib/open_street_map/errors.rb
+lib/open_street_map/node.rb
+lib/open_street_map/oauth_client.rb
+lib/open_street_map/relation.rb
+lib/open_street_map/tags.rb
+lib/open_street_map/way.rb
+lib/osm-client.rb
+osm-client.gemspec
+spec/open_street_map/node_spec.rb
+spec/open_street_map_spec.rb

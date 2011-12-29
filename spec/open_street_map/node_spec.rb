@@ -1,4 +1,4 @@
-require 'open_street_map'
+require 'osm-client'
 
 describe 'OpenStreetMap::Node' do
 
@@ -24,6 +24,10 @@ describe 'OpenStreetMap::Node' do
 
   it "should have a changeset attributes set from attributes" do
     node.changeset.should eql(12)
+  end
+
+  it "should produce xml" do
+    node.tags[:wheelchair] = 'yes'
   end
 
 end

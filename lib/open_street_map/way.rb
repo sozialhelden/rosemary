@@ -1,4 +1,12 @@
-module OpenStreetMap
+class OpenStreetMap
+  # OpenStreetMap Way.
+  #
+  # To create a new OpenStreetMap::Way object:
+  #   way = OpenStreetMap::Way.new()
+  #
+  # To get a way from the API:
+  #   way = OpenStreetMap::Way.find(17)
+  #
   class Way < Element
     # Array of node IDs in this way.
     attr_reader :nodes
@@ -16,7 +24,11 @@ module OpenStreetMap
     end
 
     def type
-        'way'
+        'Way'
+    end
+
+    def self.find(id)
+      Api.get_way(id)
     end
 
   end

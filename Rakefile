@@ -20,7 +20,7 @@ Echoe.new('osm-client', '0.1.0') do |p|
    *.tmproj
  }
 
- p.runtime_dependencies     = [ "httparty" ]
+ p.runtime_dependencies     = [ "httparty", "builder" ]
  p.development_dependencies = [ "echoe", "rspec", "webmock" ]
 end
 
