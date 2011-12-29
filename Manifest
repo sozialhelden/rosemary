@@ -16,4 +16,7 @@ lib/open_street_map/way.rb
 lib/osm-client.rb
 osm-client.gemspec
 spec/open_street_map/node_spec.rb
-spec/open_street_map_spec.rb
+spec/open_street_map/relation_spec.rb
+spec/open_street_map/way_spec.rb
+spec/open_street_map_node_spec.rb
+spec/open_street_map_way_spec.rb

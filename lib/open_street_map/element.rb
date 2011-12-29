@@ -43,7 +43,7 @@ class OpenStreetMap
     def initialize(attrs = {}) #:nodoc:
       raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::Element
       attrs = {'version' => 1, 'uid' => 1}.merge(attrs.stringify_keys!)
-      @id         = attrs['id'].to_i
+      @id         = attrs['id'].to_i if attrs['id']
       @version    = attrs['version'].to_i
       @uid        = attrs['uid'].to_i
       @user       = attrs['user']
