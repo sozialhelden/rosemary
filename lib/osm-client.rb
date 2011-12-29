@@ -80,12 +80,20 @@ class OpenStreetMap
 
   def save(element)
     raise CredentialsMissing if @client.nil?
-    if element.id.nil?
-      response = self.class.put("/#{element.type.downcase}/create", :body => element.to_xml )
+    response = if element.id.nil?
+      create(element)
     else
-      response = self.class.post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml )
+      update(element)
     end
     check_response_codes(response)
+  end
+
+  def create(element)
+    self.class.put("/#{element.type.downcase}/create", :body => element.to_xml )
+  end
+
+  def update(element)
+    self.class.post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml )
   end
 
   private
