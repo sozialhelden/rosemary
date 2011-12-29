@@ -23,7 +23,7 @@ describe 'OpenStreetMap' do
       EOF
     end
 
-    describe '#find' do
+    describe '#find:' do
 
       it "should build a Node from API response via get_object" do
         stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/1234").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
@@ -38,14 +38,14 @@ describe 'OpenStreetMap' do
       end
 
       it "should raise an Gone error, when a node has been deleted" do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/1234").to_return(:status => 410, :body => '', :headers => {})
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/1234").to_return(:status => 410, :body => '', :headers => {'Content-Type' => 'text/plain'})
         lambda {
           node = osm.find_node(1234)
         }.should raise_error(OpenStreetMap::Gone)
       end
 
       it "should raise an NotFound error, when a node cannot be found" do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/1234").to_return(:status => 404, :body => '', :headers => {})
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/1234").to_return(:status => 404, :body => '', :headers => {'Content-Type' => 'text/plain'})
         lambda {
           node = osm.find_node(1234)
         }.should raise_error(OpenStreetMap::NotFound)
@@ -57,7 +57,6 @@ describe 'OpenStreetMap' do
       let :osm do
         OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
       end
-
 
       it "should create a new Node from given attributes" do
         stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/create").to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
@@ -76,48 +75,10 @@ describe 'OpenStreetMap' do
 
     end
 
-    describe ' update' do
+    describe '#update:' do
     end
 
-    describe ' delete' do
-    end
-  end
-
-  describe 'Way' do
-
-    def valid_fake_way
-      way=<<-EOF
-      <osm>
-       <way id="123" version="142" changeset="12" user="fred" uid="123" visible="true" timestamp="2005-07-30T14:27:12+01:00">
-         <tag k="note" v="Just a way"/>
-         <nd ref="15735248"/>
-         <nd ref="169269997"/>
-         <nd ref="169270001"/>
-         <nd ref="15735251"/>
-         <nd ref="15735252"/>
-         <nd ref="15735253"/>
-         <nd ref="15735250"/>
-         <nd ref="15735247"/>
-         <nd ref="15735246"/>
-         <nd ref="15735249"/>
-         <nd ref="15735248"/>
-       </way>
-      </osm>
-      EOF
-    end
-
-    it "should build a Way from API response via get_object" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
-      way = osm.find_element('way', 1234)
-      way.class.should eql OpenStreetMap::Way
-      way.nodes.should include(15735246)
-    end
-
-    it "should build a Way from API response via get_way" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
-      way = osm.find_way(1234)
-      way.class.should eql OpenStreetMap::Way
-      way.nodes.should include(15735246)
+    describe '#delete:' do
     end
   end
 end
