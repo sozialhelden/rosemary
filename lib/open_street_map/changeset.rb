@@ -1,3 +1,4 @@
+require 'builder'
 class OpenStreetMap
   class Changeset
     # Unique ID

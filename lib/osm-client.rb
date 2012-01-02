@@ -6,6 +6,7 @@ require 'lib/open_street_map/node'
 require 'lib/open_street_map/way'
 require 'lib/open_street_map/changeset'
 require 'lib/open_street_map/relation'
+require 'lib/open_street_map/user'
 require 'lib/open_street_map/errors'
 require 'lib/open_street_map/basic_auth_client'
 require 'lib/open_street_map/oauth_client'
@@ -30,7 +31,7 @@ class OpenStreetMap
 
   # the default base URI for the API
   base_uri "http://www.openstreetmap.org/api/#{API_VERSION}"
-  default_timeout 2
+  default_timeout 5
 
   attr_accessor :client
 
@@ -98,10 +99,14 @@ class OpenStreetMap
     find_element('changeset', id)
   end
 
-  def find_user_id
+  # Get the user which represented by the OpenStreetMap::Client
+  #
+  # call-seq: find_user -> OpenStreetMap::User
+  #
+  def find_user
     raise CredentialsMissing if client.nil?
     response = do_authenticated_request(:get, "/user/details")
-    response['osm']['user']['id']
+    user = OpenStreetMap::User.new(response['osm']['user'])
   end
 
   # Saves an element to the API.
@@ -134,7 +139,7 @@ class OpenStreetMap
 
   def find_changesets_for_user(options = {})
     raise CredentialsMissing if client.nil?
-    user_id = find_user_id
+    user_id = find_user.id
     response = get("/changesets", :query => options.merge({:user => user_id}))
     case response['osm']['changeset']
     when Array
