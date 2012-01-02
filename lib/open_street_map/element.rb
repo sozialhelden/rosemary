@@ -2,10 +2,6 @@ class OpenStreetMap
   # This is a virtual parent class for the OSM objects Node, Way and Relation.
   class Element
 
-    # To give out unique IDs to the objects we keep a counter that
-    # gets decreased every time we use it. See the _next_id method.
-    @@id = 0
-
     # Unique ID
     attr_reader :id
 
