@@ -78,6 +78,8 @@ class OpenStreetMap
     find_element('relation', id)
   end
 
+  # Saves an element to the API.
+  # If it has no id yet, the element will be created, otherwise updated.
   def save(element)
     raise CredentialsMissing if @client.nil?
     response = if element.id.nil?
@@ -89,11 +91,21 @@ class OpenStreetMap
   end
 
   def create(element)
-    self.class.put("/#{element.type.downcase}/create", :body => element.to_xml )
+    case client
+    when OpenStreetMap::BasicAuthClient
+      self.class.put("/#{element.type.downcase}/create", :body => element.to_xml, :basic_auth => client.credentials )
+    when OpenStreetMap::OauthClient
+      client.put("/#{element.type.downcase}/create", :body => element.to_xml)
+    end
   end
 
   def update(element)
-    self.class.post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml )
+    case client
+    when OpenStreetMap::BasicAuthClient
+      self.class.post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml, :basic_auth => client.credentials )
+    when OpenStreetMap::OauthClient
+      client.post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
+    end
   end
 
   private
@@ -113,6 +125,5 @@ class OpenStreetMap
       else raise Error
     end
   end
-
 
 end

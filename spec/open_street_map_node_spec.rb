@@ -65,20 +65,20 @@ describe 'OpenStreetMap' do
       end
 
       it "should create a new Node from given attributes" do
-        stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/create").to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create").to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
         node.id.should be_nil
         new_id = osm.save(node)
       end
 
       it "should not create a Node with invalid xml but raise BadRequest" do
-        stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/create").to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create").to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
         lambda {
           new_id = osm.save(node)
         }.should raise_error(OpenStreetMap::BadRequest)
       end
 
       it "should not allow to create a node when a changeset has been closed" do
-        stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/create").to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create").to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
         lambda {
           new_id = osm.save(node)
         }.should raise_error(OpenStreetMap::Conflict)
@@ -101,7 +101,7 @@ describe 'OpenStreetMap' do
 
       it "should save a edited node" do
         stub_request(:get,  "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
-        stub_request(:post, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '2', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:post, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '2', :headers => {'Content-Type' => 'text/plain'})
         node = osm.find_element('node', 123)
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
