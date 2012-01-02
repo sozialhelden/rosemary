@@ -48,7 +48,18 @@ class OpenStreetMap
       ["yes", "1", "t", "true"].include?(open)
     end
 
-    def to_xml
+    def to_xml(options = {})
+      options[:indent] ||= 0
+      xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+      xml.instruct! unless options[:skip_instruct]
+      xml.osm do
+        xml.changeset do
+          tags.each do |k,v|
+            xml.tag(:k => k, :v => v)
+          end unless tags.empty?
+        end
+      end
     end
+
   end
 end

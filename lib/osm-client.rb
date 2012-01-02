@@ -98,9 +98,10 @@ class OpenStreetMap
     find_element('changeset', id)
   end
 
-  def find_user
+  def find_username
     raise CredentialsMissing if client.nil?
-    do_authenticated_request(:get, "/user/details")
+    response = do_authenticated_request(:get, "/user/details")
+    response['osm']['user']['display_name']
   end
 
   # Saves an element to the API.
@@ -112,73 +113,77 @@ class OpenStreetMap
     else
       update(element)
     end
-    check_response_codes(response)
   end
 
   def create(element)
     raise CredentialsMissing if client.nil?
-    put("/#{element.type.downcase}/create", :body => element.to_xml)
+    response = put("/#{element.type.downcase}/create", :body => element.to_xml)
   end
 
   def update(element)
     raise CredentialsMissing if client.nil?
     raise ChangesetMissing unless changeset.open?
-    post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
+    response = post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
   end
 
   def create_changeset
-    response = case client
-    when OpenStreetMap::BasicAuthClient
-      self.class.put("/changeset/create", :body => '<osm><changeset><tag k="created_by" v="rOSM v 0.0.1" /></changeset></osm>', :basic_auth => client.credentials )
-    when OpenStreetMap::OauthClient
-      client.put("/changeset/create", :body => '<osm><changeset><tag k="created_by" v="rOSM v 0.0.1" /></changeset></osm>')
-    end
-    check_response_codes(response)
+    changeset = OpenStreetMap::Changeset.new
+    response = put("/changeset/create", :body => changeset.to_xml)
     OpenStreetMap::Changeset.new(response['osm']['changeset'])
   end
 
 
   private
 
+  # most GET requests are valid without authentication, so this is the standard
   def get(url, options = {})
     do_request(:get, url, options)
   end
 
+  # all PUT requests need authorization, so this is the stanard
   def put(url, options = {})
     do_authenticated_request(:put, url, options)
   end
 
+  # all POST requests need authorization, so this is the stanard
   def post(url, options = {})
     do_authenticated_request(:post, url, options)
   end
 
+  # all DELETE requests need authorization, so this is the stanard
   def delete(url, options = {})
     do_authenticated_request(:delete, url, options)
   end
 
+  # Do a API request without authentication
   def do_request(method, url, options)
-    self.class.send(method, url, options)
+    response = self.class.send(method, url, options)
+    check_response_codes(response)
+    response
   end
 
+  # Do a API request with authentication, using the given client
   def do_authenticated_request(method, url, options)
-    case client
+    response = case client
     when OpenStreetMap::BasicAuthClient
       self.class.send(method, url, options.merge(:basic_auth => client.credentials))
     when OpenStreetMap::OauthClient
       client.send(method, url, options)
     end
+    check_response_codes(response)
+    response
   end
 
   def find_open_changeset
     raise CredentialsMissing if client.nil?
-    response = case client
+    username = case client
     when OpenStreetMap::BasicAuthClient
-      self.class.get("/changesets", :query => {:open => true, :user => client.credentials[:username]})
+      client.credentials[:username]
     when OpenStreetMap::OauthClient
-      user = find_user
-      client.get("/changesets", :query => {:open => true, :user => user.display_name})
+      find_username
     end
-    check_response_codes(response)
+
+    response = get("/changesets", :query => {:open => true, :user => username})
     OpenStreetMap::Changeset.new(response['osm']['changeset'])
   end
 
