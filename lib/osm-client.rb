@@ -49,7 +49,7 @@ class OpenStreetMap
   # call-seq: find_element('node', id) -> OpenStreetMap::Element
   #
   def find_element(type, id)
-    raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation)$/
+    raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation|changeset)$/
     raise TypeError.new('id needs to be a positive integer') unless(id.kind_of?(Fixnum) && id > 0)
     response = get("/#{type}/#{id}")
     check_response_codes(response)
@@ -132,6 +132,20 @@ class OpenStreetMap
     OpenStreetMap::Changeset.new(:id => response) unless response == 0
   end
 
+  def find_changesets_for_user(options = {})
+    raise CredentialsMissing if client.nil?
+    user_id = find_user_id
+    response = get("/changesets", :query => options.merge({:user => user_id}))
+    case response['osm']['changeset']
+    when Array
+      response['osm']['changeset'].map{|h| OpenStreetMap::Changeset.new(h)}
+    when Hash
+      [OpenStreetMap::Changeset.new(response['osm']['changeset'])]
+    else
+      []
+    end
+  end
+
   private
 
   # most GET requests are valid without authentication, so this is the standard
@@ -174,19 +188,7 @@ class OpenStreetMap
   end
 
   def find_open_changeset
-    raise CredentialsMissing if client.nil?
-    user_id = find_user_id
-    response = get("/changesets", :query => {:open => true, :user => user_id})
-    changeset_hash = case response['osm']['changeset']
-    when Array
-      response['osm']['changeset'].first
-    when Hash
-      response['osm']['changeset']
-    else
-      nil
-    end
-
-    OpenStreetMap::Changeset.new(changeset_hash) unless changeset_hash.nil?
+    find_changesets_for_user(:open => true).first
   end
 
   def find_or_create_open_changeset(options = {})

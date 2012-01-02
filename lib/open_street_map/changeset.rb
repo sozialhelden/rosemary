@@ -18,6 +18,9 @@ class OpenStreetMap
     # Creation date of this changeset
     attr_accessor :created_at
 
+    # When the changeset was closed
+    attr_accessor :closed_at
+
     # Bounding box surrounding all changes made in this changeset
     attr_accessor :min_lat, :min_lon, :max_lat, :max_lon
 
@@ -29,9 +32,11 @@ class OpenStreetMap
       @id         = attrs['id'].to_i if attrs['id']
       @uid        = attrs['uid'].to_i
       @user       = attrs['user']
-      @created_at  = Time.parse(attrs['created_at']) rescue nil
+      @created_at = Time.parse(attrs['created_at']) rescue nil
+      @closed_at  = Time.parse(attrs['closed_at']) rescue nil
       @open       = attrs['open']
       @tags       = Tags.new
+      @tags[:created_by] = 'osm-client for ruby'
       @min_lat    = attrs['min_lat'].to_f
       @min_lon    = attrs['min_lon'].to_f
       @max_lat    = attrs['max_lat'].to_f
