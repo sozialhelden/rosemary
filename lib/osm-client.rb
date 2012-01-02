@@ -98,10 +98,10 @@ class OpenStreetMap
     find_element('changeset', id)
   end
 
-  def find_username
+  def find_user_id
     raise CredentialsMissing if client.nil?
     response = do_authenticated_request(:get, "/user/details")
-    response['osm']['user']['display_name']
+    response['osm']['user']['id']
   end
 
   # Saves an element to the API.
@@ -129,9 +129,8 @@ class OpenStreetMap
   def create_changeset
     changeset = OpenStreetMap::Changeset.new
     response = put("/changeset/create", :body => changeset.to_xml)
-    OpenStreetMap::Changeset.new(response['osm']['changeset'])
+    OpenStreetMap::Changeset.new(:id => response) unless response == 0
   end
-
 
   private
 
@@ -156,14 +155,14 @@ class OpenStreetMap
   end
 
   # Do a API request without authentication
-  def do_request(method, url, options)
+  def do_request(method, url, options = {})
     response = self.class.send(method, url, options)
     check_response_codes(response)
     response
   end
 
   # Do a API request with authentication, using the given client
-  def do_authenticated_request(method, url, options)
+  def do_authenticated_request(method, url, options = {})
     response = case client
     when OpenStreetMap::BasicAuthClient
       self.class.send(method, url, options.merge(:basic_auth => client.credentials))
@@ -176,15 +175,18 @@ class OpenStreetMap
 
   def find_open_changeset
     raise CredentialsMissing if client.nil?
-    username = case client
-    when OpenStreetMap::BasicAuthClient
-      client.credentials[:username]
-    when OpenStreetMap::OauthClient
-      find_username
+    user_id = find_user_id
+    response = get("/changesets", :query => {:open => true, :user => user_id})
+    changeset_hash = case response['osm']['changeset']
+    when Array
+      response['osm']['changeset'].first
+    when Hash
+      response['osm']['changeset']
+    else
+      nil
     end
 
-    response = get("/changesets", :query => {:open => true, :user => username})
-    OpenStreetMap::Changeset.new(response['osm']['changeset'])
+    OpenStreetMap::Changeset.new(changeset_hash) unless changeset_hash.nil?
   end
 
   def find_or_create_open_changeset(options = {})

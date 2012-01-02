@@ -110,7 +110,11 @@ describe 'OpenStreetMap' do
       end
 
       let! :stub_changeset_lookup do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=a_username").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
+      end
+
+      let! :stub_user_lookup do
+        stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
       end
 
       it "should create a new Node from given attributes" do
@@ -149,7 +153,11 @@ describe 'OpenStreetMap' do
       end
 
       let! :stub_changeset_lookup do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=a_username").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
+      end
+
+      let! :stub_user_lookup do
+        stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
       end
 
       it "should save a edited node" do
