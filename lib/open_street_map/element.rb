@@ -24,7 +24,7 @@ class OpenStreetMap
     attr_reader :timestamp
 
     # The changeset the last change of this object was made with.
-    attr_reader :changeset
+    attr_accessor :changeset
 
     # Tags for this object
     attr_reader :tags

@@ -166,8 +166,8 @@ describe 'OpenStreetMap' do
       end
 
       it "should save a edited node" do
-        stub_request(:get,  "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
-        stub_request(:post, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '2', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
+        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '2', :headers => {'Content-Type' => 'text/plain'})
         node = osm.find_element('node', 123)
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'

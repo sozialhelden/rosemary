@@ -12,6 +12,9 @@ class OpenStreetMap
   # This error occurs when OpenStreetMap is instantiated without a client
   class CredentialsMissing < StandardError; end
 
+  # This error occurs when OpenStreetMap has no changeset.
+  class ChangesetMissing < StandardError; end
+
   # An object was not found in the database.
   class NotFound < Error; end
 

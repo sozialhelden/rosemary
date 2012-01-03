@@ -32,7 +32,7 @@ class OpenStreetMap
 
     # List of attributes for a Node
     def attribute_list
-      [:id, :version, :uid, :user, :timestamp, :lon, :lat]
+      [:id, :version, :uid, :user, :timestamp, :lon, :lat, :changeset]
     end
 
     def to_xml(options = {})

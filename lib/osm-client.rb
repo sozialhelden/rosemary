@@ -31,6 +31,8 @@ class OpenStreetMap
 
   # the default base URI for the API
   base_uri "http://www.openstreetmap.org/api/#{API_VERSION}"
+  #base_uri "http://api06.dev.openstreetmap.org/api/#{API_VERSION}"
+
   default_timeout 5
 
   attr_accessor :client
@@ -64,7 +66,6 @@ class OpenStreetMap
     when 'changeset'
       OpenStreetMap::Changeset.new(response['osm']['changeset'])
     end
-
   end
 
   # Get a Node with specified ID from API.
@@ -128,13 +129,18 @@ class OpenStreetMap
   def update(element)
     raise CredentialsMissing if client.nil?
     raise ChangesetMissing unless changeset.open?
-    response = post("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
+    element.changeset = changeset.id
+    response = put("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
   end
 
   def create_changeset
     changeset = OpenStreetMap::Changeset.new
-    response = put("/changeset/create", :body => changeset.to_xml)
-    OpenStreetMap::Changeset.new(:id => response) unless response == 0
+    changeset_id = put("/changeset/create", :body => changeset.to_xml).body.to_i
+    find_changeset(changeset_id) unless changeset_id == 0
+  end
+
+  def close_changeset
+    put("/changeset/#{changeset.id}/close")
   end
 
   def find_changesets_for_user(options = {})
@@ -197,7 +203,7 @@ class OpenStreetMap
   end
 
   def find_or_create_open_changeset(options = {})
-    @changeset = find_open_changeset || create_changeset
+    @changeset = (find_open_changeset || create_changeset)
   end
 
   def check_response_codes(response)
