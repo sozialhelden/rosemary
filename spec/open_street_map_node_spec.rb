@@ -65,7 +65,7 @@ describe 'OpenStreetMap' do
 
       it "should build a Node from API response via get_object" do
         stubbed_request.to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
-        node = osm.find_element('node', 1234)
+        node = osm.find_node 1234
         assert_requested :get, request_url, :times => 1
         node.class.should eql OpenStreetMap::Node
         node.tags.size.should eql 3
@@ -73,12 +73,6 @@ describe 'OpenStreetMap' do
         node['name'].should eql 'The rose'
         node.add_tags('wheelchair' => 'yes')
         node['wheelchair'].should eql 'yes'
-      end
-
-      it "should build a Node from API response via get_node" do
-        stubbed_request.to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
-        node = osm.find_node(1234)
-        node.class.should eql OpenStreetMap::Node
       end
 
       it "should raise an Gone error, when a node has been deleted" do
@@ -168,7 +162,7 @@ describe 'OpenStreetMap' do
       it "should save a edited node" do
         stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
         stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '2', :headers => {'Content-Type' => 'text/plain'})
-        node = osm.find_element('node', 123)
+        node = osm.find_node 123
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
         new_version = osm.save(node)

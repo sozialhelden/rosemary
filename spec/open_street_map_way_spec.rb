@@ -36,13 +36,6 @@ describe 'OpenStreetMap' do
 
     describe '#find:' do
 
-      it "should build a Way from API response via get_object" do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
-        way = osm.find_element('way', 1234)
-        way.class.should eql OpenStreetMap::Way
-        way.nodes.should include(15735246)
-      end
-
       it "should build a Way from API response via get_way" do
         stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
         way = osm.find_way(1234)

@@ -47,27 +47,6 @@ class OpenStreetMap
     @changeset ||= create_changeset
   end
 
-  # Get an object ('node', 'way', or 'relation') with specified ID from API.
-  #
-  # call-seq: find_element('node', id) -> OpenStreetMap::Element
-  #
-  def find_element(type, id)
-    raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation|changeset)$/
-    raise TypeError.new('id needs to be a positive integer') unless(id.kind_of?(Fixnum) && id > 0)
-    response = get("/#{type}/#{id}")
-    check_response_codes(response)
-    case type
-    when 'node'
-      OpenStreetMap::Node.new(response['osm']['node'])
-    when 'way'
-      OpenStreetMap::Way.new(response['osm']['way'])
-    when 'relation'
-      OpenStreetMap::Relation.new(response['osm']['relation'])
-    when 'changeset'
-      OpenStreetMap::Changeset.new(response['osm']['changeset'])
-    end
-  end
-
   # Get a Node with specified ID from API.
   #
   # call-seq: find_node(id) -> OpenStreetMap::Node
@@ -158,6 +137,27 @@ class OpenStreetMap
   end
 
   private
+
+  # Get an object ('node', 'way', or 'relation') with specified ID from API.
+  #
+  # call-seq: find_element('node', id) -> OpenStreetMap::Element
+  #
+  def find_element(type, id)
+    raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation|changeset)$/
+    raise TypeError.new('id needs to be a positive integer') unless(id.kind_of?(Fixnum) && id > 0)
+    response = get("/#{type}/#{id}")
+    check_response_codes(response)
+    case type
+    when 'node'
+      OpenStreetMap::Node.new(response['osm']['node'])
+    when 'way'
+      OpenStreetMap::Way.new(response['osm']['way'])
+    when 'relation'
+      OpenStreetMap::Relation.new(response['osm']['relation'])
+    when 'changeset'
+      OpenStreetMap::Changeset.new(response['osm']['changeset'])
+    end
+  end
 
   # most GET requests are valid without authentication, so this is the standard
   def get(url, options = {})
