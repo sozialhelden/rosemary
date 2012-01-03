@@ -68,6 +68,11 @@ describe 'OpenStreetMap' do
         node = osm.find_element('node', 1234)
         assert_requested :get, request_url, :times => 1
         node.class.should eql OpenStreetMap::Node
+        node.tags.size.should eql 3
+        node.tags['name'].should eql 'The rose'
+        node['name'].should eql 'The rose'
+        node.add_tags('wheelchair' => 'yes')
+        node['wheelchair'].should eql 'yes'
       end
 
       it "should build a Node from API response via get_node" do

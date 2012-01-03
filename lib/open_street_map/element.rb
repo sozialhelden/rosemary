@@ -46,6 +46,7 @@ class OpenStreetMap
       @timestamp  = Time.parse(attrs['timestamp']) rescue nil
       @changeset  = attrs['changeset'].to_i
       @tags       = Tags.new
+      add_tags(attrs['tag']) if attrs['tag']
     end
 
     # Create an error when somebody tries to set the ID.
@@ -96,8 +97,23 @@ class OpenStreetMap
     # call-seq: add_tags(Hash) -> OsmObject
     #
     def add_tags(new_tags)
-      new_tags.each do |k, v|
-        self.tags[k.to_s] = v
+      case new_tags
+      when Array # Called with an array
+        # Call recursively for each entry
+        new_tags.each do |tag_hash|
+          add_tags(tag_hash)
+        end
+      when Hash # Called with a hash
+        #check if it is weird {'k' => 'key', 'v' => 'value'} syntax
+        if (new_tags.size == 2 && new_tags.keys.include?('k') && new_tags.keys.include?('v'))
+          # call recursively with values from k and v keys.
+          add_tags({new_tags['k'] => new_tags['v']})
+        else
+          # OK, this seems to be a proper ruby hash with a single entry
+          new_tags.each do |k,v|
+            self.tags[k] = v
+          end
+        end
       end
       self    # return self so calls can be chained
     end
