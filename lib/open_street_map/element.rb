@@ -29,7 +29,6 @@ class OpenStreetMap
     # Tags for this object
     attr_reader :tags
 
-
     # Get OpenStreetMap::Element from API
     def self.from_api(id, api=OpenStreetMap::API.new) #:nodoc:
         raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::Element

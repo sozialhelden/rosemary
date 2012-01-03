@@ -50,8 +50,31 @@ class OpenStreetMap
       @created_at = Time.parse(timestamp)
     end
 
+    # Is this changeset still open?
     def open?
       ["yes", "1", "t", "true"].include?(open)
+    end
+
+    # List of attributes for a Changeset
+    def attribute_list
+      [:id, :user, :uid, :open, :created_at, :closed_at, :min_lat, :max_lat, :min_lon, :max_lon]
+    end
+
+    # Returns a hash of all non-nil attributes of this object.
+    #
+    # Keys of this hash are <tt>:id</tt>, <tt>:user</tt>,
+    # and <tt>:timestamp</tt>. For a Node also <tt>:lon</tt>
+    # and <tt>:lat</tt>.
+    #
+    # call-seq: attributes -> Hash
+    #
+    def attributes
+      attrs = Hash.new
+      attribute_list.each do |attribute|
+        value = self.send(attribute)
+        attrs[attribute] = value unless value.nil?
+      end
+      attrs
     end
 
     def to_xml(options = {})
@@ -59,7 +82,7 @@ class OpenStreetMap
       xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
       xml.instruct! unless options[:skip_instruct]
       xml.osm do
-        xml.changeset do
+        xml.changeset(attributes) do
           tags.each do |k,v|
             xml.tag(:k => k, :v => v)
           end unless tags.empty?
