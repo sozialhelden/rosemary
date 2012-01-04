@@ -11,12 +11,20 @@ describe 'OpenStreetMap' do
     OpenStreetMap.new
   end
 
+  let :stub_changeset_lookup do
+    stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
+  end
+
+  let :stub_user_lookup do
+    stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+  end
+
   describe '::Node' do
 
     def valid_fake_node
       node=<<-EOF
       <osm>
-       <node id="123" lat="51.2" lon="13.4" version="142" changeset="12" user="fred" uid="123" visible="true" timestamp="2005-07-30T14:27:12+01:00">
+       <node id="123" lat="51.2" lon="13.4" version="42" changeset="12" user="fred" uid="123" visible="true" timestamp="2005-07-30T14:27:12+01:00">
          <tag k="note" v="Just a node"/>
          <tag k="amenity" v="bar" />
          <tag k="name" v="The rose" />
@@ -108,12 +116,9 @@ describe 'OpenStreetMap' do
         stub_request(:put, request_url)
       end
 
-      let! :stub_changeset_lookup do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
-      end
-
-      let! :stub_user_lookup do
-        stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      before do
+        stub_changeset_lookup
+        stub_user_lookup
       end
 
       it "should create a new Node from given attributes" do
@@ -151,26 +156,46 @@ describe 'OpenStreetMap' do
         OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
       end
 
-      let! :stub_changeset_lookup do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
-      end
-
-      let! :stub_user_lookup do
-        stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      before do
+        stub_changeset_lookup
+        stub_user_lookup
       end
 
       it "should save a edited node" do
         stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
-        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '2', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node = osm.find_node 123
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
         new_version = osm.save(node)
+        new_version.should eql 43
       end
 
     end
 
     describe '#delete:' do
+      let :osm do
+        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+      end
+
+      before do
+        stub_changeset_lookup
+        stub_user_lookup
+      end
+
+      it "should delete an existing node" do
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
+        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        node = osm.find_node 123
+        new_version = osm.destroy(node)
+        new_version.should eql 43 # new version number
+      end
+
+      it "should not delete an node with missing id" do
+        node = OpenStreetMap::Node.new
+        osm.destroy(node)
+      end
+
     end
   end
 end

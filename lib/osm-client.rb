@@ -89,10 +89,15 @@ class OpenStreetMap
     user = OpenStreetMap::User.new(response['osm']['user'])
   end
 
+  # Delete an element
+  def destroy(element)
+    response = delete("/#{element.type.downcase}/#{element.id}", :body => element.to_xml) unless element.id.nil?
+    response.to_i # New version number
+  end
+
   # Saves an element to the API.
   # If it has no id yet, the element will be created, otherwise updated.
   def save(element)
-    raise CredentialsMissing if client.nil?
     response = if element.id.nil?
       create(element)
     else
@@ -101,15 +106,14 @@ class OpenStreetMap
   end
 
   def create(element)
-    raise CredentialsMissing if client.nil?
-    response = put("/#{element.type.downcase}/create", :body => element.to_xml)
+    put("/#{element.type.downcase}/create", :body => element.to_xml)
   end
 
   def update(element)
-    raise CredentialsMissing if client.nil?
     raise ChangesetMissing unless changeset.open?
     element.changeset = changeset.id
     response = put("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
+    response.to_i # New Version number
   end
 
   def create_changeset
@@ -123,7 +127,6 @@ class OpenStreetMap
   end
 
   def find_changesets_for_user(options = {})
-    raise CredentialsMissing if client.nil?
     user_id = find_user.id
     response = get("/changesets", :query => options.merge({:user => user_id}))
     case response['osm']['changeset']
@@ -193,6 +196,8 @@ class OpenStreetMap
       self.class.send(method, url, options.merge(:basic_auth => client.credentials))
     when OpenStreetMap::OauthClient
       client.send(method, url, options)
+    else
+      raise OpenStreetMapp::CredentialsMissing
     end
     check_response_codes(response)
     response

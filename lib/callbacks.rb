@@ -5,21 +5,21 @@ module Callbacks
 
   def self.included(into)
     into.instance_methods(false).select{|method_name| [:save, :create, :update, :delete].include?(method_name.to_sym)}.each do |m|
-      Callbacks.before_save(into, m)
+      Callbacks.before_write(into, m)
     end
 
     def into.method_added(m)
       unless @adding
         @adding = true
         if [:save, :create, :update, :delete].include?(m.to_sym)
-          Callbacks.before_save(self, m)
+          Callbacks.before_write(self, m)
         end
         @adding = false
       end
     end
   end
 
-  def Callbacks.before_save(klass, meth)
+  def Callbacks.before_write(klass, meth)
     klass.class_eval do
       alias_method "old_#{meth}", "#{meth}"
       define_method(meth) do |*args|
