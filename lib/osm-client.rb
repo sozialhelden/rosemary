@@ -91,6 +91,8 @@ class OpenStreetMap
 
   # Delete an element
   def destroy(element)
+    raise ChangesetMissing unless changeset.open?
+    element.changeset = changeset.id
     response = delete("/#{element.type.downcase}/#{element.id}", :body => element.to_xml) unless element.id.nil?
     response.to_i # New version number
   end

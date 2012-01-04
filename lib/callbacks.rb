@@ -4,14 +4,14 @@
 module Callbacks
 
   def self.included(into)
-    into.instance_methods(false).select{|method_name| [:save, :create, :update, :delete].include?(method_name.to_sym)}.each do |m|
+    into.instance_methods(false).select{|method_name| [:save, :create, :update, :destroy].include?(method_name.to_sym)}.each do |m|
       Callbacks.before_write(into, m)
     end
 
     def into.method_added(m)
       unless @adding
         @adding = true
-        if [:save, :create, :update, :delete].include?(m.to_sym)
+        if [:save, :create, :update, :destroy].include?(m.to_sym)
           Callbacks.before_write(self, m)
         end
         @adding = false

@@ -19,6 +19,10 @@ describe 'OpenStreetMap' do
     stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
   end
 
+  let :stub_node_lookup do
+    stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
+  end
+
   describe '::Node' do
 
     def valid_fake_node
@@ -159,14 +163,15 @@ describe 'OpenStreetMap' do
       before do
         stub_changeset_lookup
         stub_user_lookup
+        stub_node_lookup
       end
 
       it "should save a edited node" do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
         stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node = osm.find_node 123
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
+        node.should_receive(:changeset=)
         new_version = osm.save(node)
         new_version.should eql 43
       end
@@ -181,12 +186,13 @@ describe 'OpenStreetMap' do
       before do
         stub_changeset_lookup
         stub_user_lookup
+        stub_node_lookup
       end
 
       it "should delete an existing node" do
-        stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node = osm.find_node 123
+        node.should_receive(:changeset=)
         new_version = osm.destroy(node)
         new_version.should eql 43 # new version number
       end
@@ -194,6 +200,18 @@ describe 'OpenStreetMap' do
       it "should not delete an node with missing id" do
         node = OpenStreetMap::Node.new
         osm.destroy(node)
+      end
+
+      it "should raise an error if node to be deleted is still part of a way" do
+        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
+        node = osm.find_node 123
+        lambda {
+          response = osm.destroy(node)
+          response.should eql "Version does not match current database version"
+        }.should raise_error OpenStreetMap::BadRequest
+      end
+
+      it "should" do
       end
 
     end
