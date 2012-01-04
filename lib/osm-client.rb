@@ -15,14 +15,12 @@ require 'httparty'
 # The OpenStreetMap class handles all calls to the OpenStreetMap API.
 #
 # Usage:
-#   require 'open_street_map/api'
-#   osm = OpenStreetMap.new(:user_name => 'user', :password => 'a_password')
-#   @node = osm.find(:node => 1234)
+#   require 'osm-client'
+#   auth_client = OpenStreetMap::BasicAuthClient.new(:user_name => 'user', :password => 'a_password')
+#   osm = OpenStreetMap.new(auth_client)
+#   @node = osm.find_node(1234)
 #   @node.tags << {:wheelchair => 'no'}
 #   osm.save(@node)
-#
-# In most cases you can use the more convenient methods on the OpenStreetMap::Node, OpenStreetMap::Way,
-# or OpenStreetMap::Relation objects.
 #
 class OpenStreetMap
   include HTTParty

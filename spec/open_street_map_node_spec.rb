@@ -102,118 +102,160 @@ describe 'OpenStreetMap' do
       end
     end
 
-    describe '#create:' do
+    describe 'with BaciAuthClient' do
 
-      let :osm do
-        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
-      end
 
-      let :node do
-        OpenStreetMap::Node.new
-      end
+      describe '#create:' do
 
-      let :request_url do
-        "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create"
-      end
+        let :osm do
+          OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+        end
 
-      let :stubbed_request do
-        stub_request(:put, request_url)
-      end
+        let :node do
+          OpenStreetMap::Node.new
+        end
 
-      before do
-        stub_changeset_lookup
-        stub_user_lookup
-      end
+        let :request_url do
+          "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create"
+        end
 
-      it "should create a new Node from given attributes" do
-        stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
-        node.id.should be_nil
-        new_id = osm.save(node)
-      end
+        let :stubbed_request do
+          stub_request(:put, request_url)
+        end
 
-      it "should not create a Node with invalid xml but raise BadRequest" do
-        stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        before do
+          stub_changeset_lookup
+          stub_user_lookup
+        end
+
+        it "should create a new Node from given attributes" do
+          stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
+          node.id.should be_nil
           new_id = osm.save(node)
-        }.should raise_error(OpenStreetMap::BadRequest)
+        end
+
+        it "should not create a Node with invalid xml but raise BadRequest" do
+          stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            new_id = osm.save(node)
+          }.should raise_error(OpenStreetMap::BadRequest)
+        end
+
+        it "should not allow to create a node when a changeset has been closed" do
+          stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            new_id = osm.save(node)
+          }.should raise_error(OpenStreetMap::Conflict)
+        end
+
+        it "should not allow to create a node when no authentication client is given" do
+          osm = OpenStreetMap.new
+          lambda {
+            osm.save(node)
+          }.should raise_error(OpenStreetMap::CredentialsMissing)
+        end
+
       end
 
-      it "should not allow to create a node when a changeset has been closed" do
-        stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
-          new_id = osm.save(node)
-        }.should raise_error(OpenStreetMap::Conflict)
+      describe '#update:' do
+
+        let :osm do
+          OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+        end
+
+        let :node do
+          osm.find_node 123
+        end
+
+        before do
+          stub_changeset_lookup
+          stub_user_lookup
+          stub_node_lookup
+        end
+
+        it "should save a edited node" do
+          stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+          node.tags['amenity'] = 'restaurant'
+          node.tags['name'] = 'Il Tramonto'
+          node.should_receive(:changeset=)
+          new_version = osm.save(node)
+          new_version.should eql 43
+        end
+
       end
 
-      it "should not allow to create a node when no authentication client is given" do
-        osm = OpenStreetMap.new
-        lambda {
-          osm.save(node)
-        }.should raise_error(OpenStreetMap::CredentialsMissing)
-      end
+      describe '#delete:' do
 
+        let :osm do
+          OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+        end
+
+        let :node do
+          osm.find_node 123
+        end
+
+        before do
+          stub_changeset_lookup
+          stub_user_lookup
+          stub_node_lookup
+        end
+
+        it "should not delete an node with missing id" do
+          node = OpenStreetMap::Node.new
+          osm.destroy(node)
+        end
+
+        it "should delete an existing node" do
+          stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+          node.should_receive(:changeset=)
+          new_version = osm.destroy(node)
+          new_version.should eql 43 # new version number
+        end
+
+        it "should raise an error if node to be deleted is still part of a way" do
+          stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            response = osm.destroy(node)
+            response.should eql "Version does not match current database version"
+          }.should raise_error OpenStreetMap::BadRequest
+        end
+
+        it "should raise an error if node cannot be found" do
+          stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 404, :body => 'Node cannot be found', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            response = osm.destroy(node)
+            response.should eql "Node cannot be found"
+          }.should raise_error OpenStreetMap::NotFound
+        end
+
+        it "should raise an error if there is a conflict" do
+          stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 409, :body => 'Node has been deleted in this changeset', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            response = osm.destroy(node)
+            response.should eql "Node has been deleted in this changeset"
+          }.should raise_error OpenStreetMap::Conflict
+        end
+
+        it "should raise an error if the node is already delted" do
+          stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 410, :body => 'Node has been deleted', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            response = osm.destroy(node)
+            response.should eql "Node has been deleted"
+          }.should raise_error OpenStreetMap::Gone
+        end
+
+        it "should raise an error if the node is part of a way" do
+          stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 412, :body => 'Node 123 is still used by way 456', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            response = osm.destroy(node)
+            response.should eql "Node 123 is still used by way 456"
+          }.should raise_error OpenStreetMap::Precondition
+        end
+
+      end
     end
 
-    describe '#update:' do
-
-      let :osm do
-        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
-      end
-
-      before do
-        stub_changeset_lookup
-        stub_user_lookup
-        stub_node_lookup
-      end
-
-      it "should save a edited node" do
-        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
-        node = osm.find_node 123
-        node.tags['amenity'] = 'restaurant'
-        node.tags['name'] = 'Il Tramonto'
-        node.should_receive(:changeset=)
-        new_version = osm.save(node)
-        new_version.should eql 43
-      end
-
-    end
-
-    describe '#delete:' do
-      let :osm do
-        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
-      end
-
-      before do
-        stub_changeset_lookup
-        stub_user_lookup
-        stub_node_lookup
-      end
-
-      it "should delete an existing node" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
-        node = osm.find_node 123
-        node.should_receive(:changeset=)
-        new_version = osm.destroy(node)
-        new_version.should eql 43 # new version number
-      end
-
-      it "should not delete an node with missing id" do
-        node = OpenStreetMap::Node.new
-        osm.destroy(node)
-      end
-
-      it "should raise an error if node to be deleted is still part of a way" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
-        node = osm.find_node 123
-        lambda {
-          response = osm.destroy(node)
-          response.should eql "Version does not match current database version"
-        }.should raise_error OpenStreetMap::BadRequest
-      end
-
-      it "should" do
-      end
-
+    describe 'with OauthClient' do
     end
   end
 end
