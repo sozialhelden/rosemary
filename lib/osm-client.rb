@@ -11,6 +11,7 @@ require 'lib/open_street_map/errors'
 require 'lib/open_street_map/basic_auth_client'
 require 'lib/open_street_map/oauth_client'
 require 'httparty'
+require 'oauth'
 
 # The OpenStreetMap class handles all calls to the OpenStreetMap API.
 #
@@ -84,6 +85,7 @@ class OpenStreetMap
   def find_user
     raise CredentialsMissing if client.nil?
     response = do_authenticated_request(:get, "/user/details")
+    puts response.inspect if client.is_a? OpenStreetMap::OauthClient
     user = OpenStreetMap::User.new(response['osm']['user'])
   end
 
@@ -195,7 +197,7 @@ class OpenStreetMap
     when OpenStreetMap::BasicAuthClient
       self.class.send(method, url, options.merge(:basic_auth => client.credentials))
     when OpenStreetMap::OauthClient
-      client.send(method, url, options)
+      client.send(method, "/api/#{API_VERSION}" + url, options)
     else
       raise OpenStreetMapp::CredentialsMissing
     end

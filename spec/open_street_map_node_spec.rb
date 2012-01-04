@@ -15,10 +15,6 @@ describe 'OpenStreetMap' do
     stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
   end
 
-  let :stub_user_lookup do
-    stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
-  end
-
   let :stub_node_lookup do
     stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
   end
@@ -102,14 +98,17 @@ describe 'OpenStreetMap' do
       end
     end
 
-    describe 'with BaciAuthClient' do
+    describe 'with BasicAuthClient' do
 
+      let :osm do
+        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+      end
+
+      let :stub_user_lookup do
+        stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      end
 
       describe '#create:' do
-
-        let :osm do
-          OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
-        end
 
         let :node do
           OpenStreetMap::Node.new
@@ -159,10 +158,6 @@ describe 'OpenStreetMap' do
 
       describe '#update:' do
 
-        let :osm do
-          OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
-        end
-
         let :node do
           osm.find_node 123
         end
@@ -185,10 +180,6 @@ describe 'OpenStreetMap' do
       end
 
       describe '#delete:' do
-
-        let :osm do
-          OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
-        end
 
         let :node do
           osm.find_node 123
@@ -256,6 +247,49 @@ describe 'OpenStreetMap' do
     end
 
     describe 'with OauthClient' do
+
+      let :consumer do
+        OAuth::Consumer.new(  'a_key', 'a_secret',
+                              {
+                                :site => 'http://www.openstreetmap.org',
+                                :request_token_path => '/oauth/request_token',
+                                :access_token_path => '/oauth/access_token',
+                                :authorize_path => '/oauth/authorize'
+                              }
+                            )
+      end
+
+      let :access_token do
+        OAuth::AccessToken.new(consumer, 'a_token', 'a_secret')
+      end
+
+      let :osm do
+        OpenStreetMap.new(OpenStreetMap::OauthClient.new(access_token))
+      end
+
+      let :stub_user_lookup do
+        stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      end
+
+      describe '#delete:' do
+
+        let :node do
+          osm.find_node 123
+        end
+
+        before do
+          stub_changeset_lookup
+          stub_user_lookup
+          stub_node_lookup
+        end
+
+        it "should delete an existing node" do
+          stub_request(:delete, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+          node.should_receive(:changeset=)
+          new_version = osm.destroy(node)
+          new_version.should eql 43 # new version number
+        end
+      end
     end
   end
 end

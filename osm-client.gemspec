@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christoph B\303\274nte"]
-  s.date = "2011-12-29"
+  s.date = "2012-01-04"
   s.description = "OpenStreetMap API client for ruby programming language"
   s.email = ["info@christophbuente.de"]
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md", "lib/hash.rb", "lib/open_street_map/api.rb", "lib/open_street_map/basic_auth_client.rb", "lib/open_street_map/element.rb", "lib/open_street_map/errors.rb", "lib/open_street_map/node.rb", "lib/open_street_map/oauth_client.rb", "lib/open_street_map/relation.rb", "lib/open_street_map/tags.rb", "lib/open_street_map/way.rb", "lib/osm-client.rb"]
@@ -24,12 +24,14 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<httparty>, [">= 0"])
       s.add_runtime_dependency(%q<builder>, [">= 0"])
+      s.add_runtime_dependency(%q<oauth>, [">= 0"])
       s.add_development_dependency(%q<echoe>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<webmock>, [">= 0"])
     else
       s.add_dependency(%q<httparty>, [">= 0"])
       s.add_dependency(%q<builder>, [">= 0"])
+      s.add_dependency(%q<oauth>, [">= 0"])
       s.add_dependency(%q<echoe>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<webmock>, [">= 0"])
@@ -37,6 +39,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<httparty>, [">= 0"])
     s.add_dependency(%q<builder>, [">= 0"])
+    s.add_dependency(%q<oauth>, [">= 0"])
     s.add_dependency(%q<echoe>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<webmock>, [">= 0"])

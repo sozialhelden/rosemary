@@ -7,6 +7,10 @@ class OpenStreetMap
       @access_token = access_token
     end
 
+    def get(url, header={})
+      access_token.get(url, {'Content-Type' => 'application/xml' })
+    end
+
     def put(url, options={}, header={})
       body = options[:body]
       access_token.put(url, body, {'Content-Type' => 'application/xml' })
