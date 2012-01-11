@@ -16,7 +16,7 @@ It provides easy access to OpenStreetMap (OSM) data. OK, gimme some code:
 
 Modification of data is supported too.
 
-    client = OpenStreetMap::BasicAuthClient('osm_user_nane', 'password')
+    client = OpenStreetMap::BasicAuthClient.new('osm_user_nane', 'password')
     api = OpenStreetMap::Api.new(client)
     node = OpenStreetMap::Node.new(:lat => 52.0, :lon => 13.4)
     api.save(node)
@@ -29,8 +29,8 @@ Yeah, i can hear you sayin: 'Seriously, do i have to provide username and passwo
                             :access_token_path => '/oauth/access_token',
                             :authorize_path => '/oauth/authorize'
                           })
-    access_token = OAuth::AccessToken(consumer, 'osm_user_token', 'osm_user_key')
-    client = OpenStreetMap::OauthClient(access_token)
+    access_token = OAuth::AccessToken.new(consumer, 'osm_user_token', 'osm_user_key')
+    client = OpenStreetMap::OauthClient.new(access_token)
     api = OpenStreetMap::Api.new(client)
     node = OpenStreetMap::Node.new(:lat => 52.0, :lon => 13.4)
     api.save(node)
