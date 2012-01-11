@@ -83,7 +83,7 @@ describe 'OpenStreetMap::Changeset' do
   end
 
   it "should have a created_at attribute within xml representation" do
-    changeset.to_xml.should match /created_at=\"Sat Nov 08 19:07:39 \+0100 2008\"/
+    changeset.to_xml.should match /created_at=\"Sat Nov 08/
   end
 
 
