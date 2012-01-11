@@ -5,7 +5,7 @@ require 'echoe'
 Echoe.new('openstreetmap', '0.1.0') do |p|
 
  p.description = "OpenStreetMap API client for ruby"
- p.url         = "http://github.com/sozialhelden/osm"
+ p.url         = "http://github.com/sozialhelden/openstreetmap"
  p.author      = ["Christoph Bünte"]
  p.email       = ["info@christophbuente.de"]
 
