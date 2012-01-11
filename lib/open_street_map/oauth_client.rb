@@ -1,4 +1,4 @@
-class OpenStreetMap
+module OpenStreetMap
   class OauthClient
 
     attr_reader :access_token
@@ -17,8 +17,9 @@ class OpenStreetMap
     end
 
     def delete(url, options={}, header={})
-      body = options[:body]
-      access_token.delete(url, body, {'Content-Type' => 'application/xml' })
+      raise OpenStreetMap::StandardError("Delete with Oauth and OSM is not supported")
+      # body = options[:body]
+      # access_token.delete(url, {'Content-Type' => 'application/xml' })
     end
 
     def post(url, options={}, header={})

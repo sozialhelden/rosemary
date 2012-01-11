@@ -1,5 +1,5 @@
 require 'webmock/rspec'
-require 'osm-client'
+require 'osm'
 
 describe 'OpenStreetMap' do
 
@@ -8,7 +8,7 @@ describe 'OpenStreetMap' do
   end
 
   let :osm do
-    OpenStreetMap.new
+    OpenStreetMap::Api.new
   end
 
   describe '::Way' do

@@ -1,5 +1,5 @@
 require 'builder'
-class OpenStreetMap
+module OpenStreetMap
   # OpenStreetMap Node.
   #
   # To create a new OpenStreetMap::Node object:

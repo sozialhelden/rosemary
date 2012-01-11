@@ -1,4 +1,4 @@
-class OpenStreetMap
+module OpenStreetMap
   class BasicAuthClient
 
     attr_reader :username, :password

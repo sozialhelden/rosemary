@@ -1,4 +1,4 @@
-require 'osm-client'
+require 'osm'
 
 describe 'OpenStreetMap::Node' do
 

@@ -1,5 +1,5 @@
 require 'builder'
-class OpenStreetMap
+module OpenStreetMap
   class User
     # Unique ID
     attr_reader :id

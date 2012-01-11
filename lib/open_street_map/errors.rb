@@ -1,4 +1,4 @@
-class OpenStreetMap
+module OpenStreetMap
   # Unspecified OSM API error.
   class Error < StandardError
     attr_reader :data

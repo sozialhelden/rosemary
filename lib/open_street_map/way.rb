@@ -1,4 +1,4 @@
-class OpenStreetMap
+module OpenStreetMap
   # OpenStreetMap Way.
   #
   # To create a new OpenStreetMap::Way object:

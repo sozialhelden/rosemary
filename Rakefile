@@ -2,10 +2,10 @@
 require 'rake'
 require 'echoe'
 
-Echoe.new('osm-client', '0.1.0') do |p|
+Echoe.new('openstreetmap', '0.1.0') do |p|
 
- p.description = "OpenStreetMap API client for ruby programming language"
- p.url         = "http://github.com/sozialhelden/osm-client"
+ p.description = "OpenStreetMap API client for ruby"
+ p.url         = "http://github.com/sozialhelden/osm"
  p.author      = ["Christoph Bünte"]
  p.email       = ["info@christophbuente.de"]
 

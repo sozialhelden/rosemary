@@ -1,5 +1,5 @@
 require 'webmock/rspec'
-require 'osm-client'
+require 'osm'
 
 describe 'OpenStreetMap' do
 
@@ -8,7 +8,7 @@ describe 'OpenStreetMap' do
   end
 
   let :osm do
-    OpenStreetMap.new
+    OpenStreetMap::Api.new
   end
 
   let :stub_changeset_lookup do
@@ -101,7 +101,7 @@ describe 'OpenStreetMap' do
     describe 'with BasicAuthClient' do
 
       let :osm do
-        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+        OpenStreetMap::Api.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
       end
 
       let :stub_user_lookup do
@@ -148,7 +148,7 @@ describe 'OpenStreetMap' do
         end
 
         it "should not allow to create a node when no authentication client is given" do
-          osm = OpenStreetMap.new
+          osm = OpenStreetMap::Api.new
           lambda {
             osm.save(node)
           }.should raise_error(OpenStreetMap::CredentialsMissing)
@@ -264,11 +264,80 @@ describe 'OpenStreetMap' do
       end
 
       let :osm do
-        OpenStreetMap.new(OpenStreetMap::OauthClient.new(access_token))
+        OpenStreetMap::Api.new(OpenStreetMap::OauthClient.new(access_token))
       end
 
       let :stub_user_lookup do
         stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      end
+
+      describe '#create:' do
+        let :node do
+          OpenStreetMap::Node.new
+        end
+
+        let :request_url do
+          "http://www.openstreetmap.org/api/0.6/node/create"
+        end
+
+        let :stubbed_request do
+          stub_request(:put, request_url)
+        end
+
+        before do
+          stub_changeset_lookup
+          stub_user_lookup
+        end
+
+        it "should create a new Node from given attributes" do
+          stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
+          node.id.should be_nil
+          new_id = osm.save(node)
+        end
+
+        it "should not create a Node with invalid xml but raise BadRequest" do
+          stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            new_id = osm.save(node)
+          }.should raise_error(OpenStreetMap::BadRequest)
+        end
+
+        it "should not allow to create a node when a changeset has been closed" do
+          stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
+          lambda {
+            new_id = osm.save(node)
+          }.should raise_error(OpenStreetMap::Conflict)
+        end
+
+        it "should not allow to create a node when no authentication client is given" do
+          osm = OpenStreetMap::Api.new
+          lambda {
+            osm.save(node)
+          }.should raise_error(OpenStreetMap::CredentialsMissing)
+        end
+
+      end
+
+      describe '#update:' do
+
+        let :node do
+          osm.find_node 123
+        end
+
+        before do
+          stub_changeset_lookup
+          stub_user_lookup
+          stub_node_lookup
+        end
+
+        it "should save a edited node" do
+          stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+          node.tags['amenity'] = 'restaurant'
+          node.tags['name'] = 'Il Tramonto'
+          node.should_receive(:changeset=)
+          new_version = osm.save(node)
+          new_version.should eql 43
+        end
       end
 
       describe '#delete:' do

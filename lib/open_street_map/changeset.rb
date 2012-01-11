@@ -1,5 +1,5 @@
 require 'builder'
-class OpenStreetMap
+module OpenStreetMap
   class Changeset
     # Unique ID
     attr_reader :id
@@ -37,7 +37,7 @@ class OpenStreetMap
       @closed_at  = Time.parse(attrs['closed_at']) rescue nil
       @open       = attrs['open']
       @tags       = Tags.new
-      @tags[:created_by] = 'osm-client for ruby'
+      @tags[:created_by] = 'osm for ruby'
       @min_lat    = attrs['min_lat'].to_f
       @min_lon    = attrs['min_lon'].to_f
       @max_lat    = attrs['max_lat'].to_f

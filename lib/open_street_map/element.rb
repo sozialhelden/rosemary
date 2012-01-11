@@ -1,4 +1,4 @@
-class OpenStreetMap
+module OpenStreetMap
   # This is a virtual parent class for the OSM objects Node, Way and Relation.
   class Element
 

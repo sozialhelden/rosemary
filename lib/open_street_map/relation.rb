@@ -1,4 +1,4 @@
-class OpenStreetMap
+module OpenStreetMap
   # OpenStreetMap Relation.
   #
   # To create a new OpenStreetMap::Relation object:

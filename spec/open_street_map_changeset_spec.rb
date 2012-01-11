@@ -1,5 +1,5 @@
 require 'webmock/rspec'
-require 'osm-client'
+require 'osm'
 
 describe 'OpenStreetMap' do
 
@@ -8,7 +8,7 @@ describe 'OpenStreetMap' do
   end
 
   let :osm do
-    OpenStreetMap.new
+    OpenStreetMap::Api.new
   end
 
   describe '::Changeset' do
@@ -90,7 +90,7 @@ describe 'OpenStreetMap' do
     describe '#find_for_user' do
 
       let :osm do
-        OpenStreetMap.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
+        OpenStreetMap::Api.new(OpenStreetMap::BasicAuthClient.new('a_username', 'a_password'))
       end
 
       let :request_url do
