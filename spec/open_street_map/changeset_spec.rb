@@ -1,4 +1,4 @@
-require 'osm'
+require 'openstreetmap'
 
 describe 'OpenStreetMap::Changeset' do
 

@@ -1,5 +1,5 @@
 require 'webmock/rspec'
-require 'osm'
+require 'openstreetmap'
 
 describe 'OpenStreetMap' do
 

@@ -1,5 +1,5 @@
 require 'webmock/rspec'
-require 'osm'
+require 'openstreetmap'
 
 describe 'OpenStreetMap' do
 
@@ -355,8 +355,10 @@ describe 'OpenStreetMap' do
         it "should delete an existing node" do
           stub_request(:delete, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
           node.should_receive(:changeset=)
-          new_version = osm.destroy(node)
-          new_version.should eql 43 # new version number
+          lambda {
+            # Delete is not implemented using oauth
+            new_version = osm.destroy(node)
+          }.should raise_error(OpenStreetMap::NotImplemented)
         end
       end
     end

@@ -17,7 +17,7 @@ module OpenStreetMap
     end
 
     def delete(url, options={}, header={})
-      raise OpenStreetMap::StandardError("Delete with Oauth and OSM is not supported")
+      raise NotImplemented.new("Delete with Oauth and OSM is not supported")
       # body = options[:body]
       # access_token.delete(url, {'Content-Type' => 'application/xml' })
     end
