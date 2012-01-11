@@ -5,7 +5,7 @@
   [1]: http://travis-ci.org/#!/sozialhelden/openstreetmap
   [2]: https://secure.travis-ci.org/sozialhelden/openstreetmap.png
 
-This ruby gem is an API client for the current OpenStreetMap API v0.6. It provides easy access to OpenStreetMap (OSM) data.
+This ruby gem is an API client for the current OpenStreetMap [API v0.6](http://wiki.openstreetmap.org/wiki/API_v0.6). It provides easy access to OpenStreetMap (OSM) data.
 
 ## What is OpenStreetMap?
 
@@ -14,7 +14,7 @@ OpenStreetMap (OSM) is a collaborative project to create a free editable map of 
 
 ## The OpenStreetMap Database
 
-OpenStreetMap data is published under an open content license, with the intention of promoting free use and re-distribution of the data (both commercial and non-commercial). The license currently used is the Creative Commons Attribution-Share Alike 2.0 licence; however, legal investigation work and community consultation is underway to relicense the project under the Open Database License (ODbL) from Open Data Commons (ODC), claimed to be more suitable for a map data set.
+OpenStreetMap data is published under an open content license, with the intention of promoting free use and re-distribution of the data (both commercial and non-commercial). The license currently used is the [Creative Commons Attribution-Share Alike 2.0 licence](http://creativecommons.org/licenses/by-sa/2.0/); however, legal investigation work and community consultation is underway to relicense the project under the [Open Database License (ODbL)](http://opendatacommons.org/licenses/odbl/) from [Open Data Commons (ODC)](http://opendatacommons.org/), claimed to be more suitable for a map data set.
 
 ## Input Data
 
@@ -32,12 +32,12 @@ OK, gimme some code:
 
 Modification of data is supported too. According to the OSM license every modification to the data has to be done by a registered OSM user account. The user can be authenticated with username and password. But see yourself:
 
-    client = OpenStreetMap::BasicAuthClient.new('osm_user_nane', 'password')
+    client = OpenStreetMap::BasicAuthClient.new('osm_user_name', 'password')
     api = OpenStreetMap::Api.new(client)
     node = OpenStreetMap::Node.new(:lat => 52.0, :lon => 13.4)
     api.save(node)
 
-Yeah, i can hear you sayin: 'Seriously, do i have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: OAuth! It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a save place.
+Yeah, i can hear you sayin: 'Seriously, do i have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: [OAuth](http://oauth.net/) It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a save place.
 
     consumer = OAuth::Consumer.new( 'osm_app_key', 'osm_app_secret',
                                     { :site => 'http://www.openstreetmap.org',
