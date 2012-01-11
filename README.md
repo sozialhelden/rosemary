@@ -5,16 +5,32 @@
   [1]: http://travis-ci.org/#!/sozialhelden/openstreetmap
   [2]: https://secure.travis-ci.org/sozialhelden/openstreetmap.png
 
-This is an API client for the current OpenStreetMap API v0.6
+This ruby gem is an API client for the current OpenStreetMap API v0.6. It provides easy access to OpenStreetMap (OSM) data.
 
-It provides easy access to OpenStreetMap (OSM) data. OK, gimme some code:
+## What is OpenStreetMap?
+
+OpenStreetMap (OSM) is a collaborative project to create a free editable map of the world. Two major driving forces behind the establishment and growth of OSM have been restrictions on use or availability of map information across much of the world and the advent of inexpensive portable GPS devices.
+
+
+## The OpenStreetMap Database
+
+OpenStreetMap data is published under an open content license, with the intention of promoting free use and re-distribution of the data (both commercial and non-commercial). The license currently used is the Creative Commons Attribution-Share Alike 2.0 licence; however, legal investigation work and community consultation is underway to relicense the project under the Open Database License (ODbL) from Open Data Commons (ODC), claimed to be more suitable for a map data set.
+
+## Input Data
+
+All data added to the project need to have a license compatible with the Creative Commons Attribution-Share Alike license. This can include out of copyright information, public domain or other licenses. All contributors must register with the project and agree to provide data on a Creative Commons CC-BY-SA 2.0 licence, or determine that the licensing of the source data is suitable; this may involve examining licences for government data to establish whether they are compatible.
+Due to the license switch, data added in future must be compatible with both the Open Database License and the new Contributor Terms in order to be accepted.
+
+## Getting started
+
+OK, gimme some code:
 
     require 'openstreetmap'
     api = OpenStreetMap::Api.new
     node = api.find_node(123)
      => #<OpenStreetMap::Node:0x1019268d0 @changeset=7836598, @timestamp=Mon Apr 11 19:40:43 UTC 2011, @user="Turleder'n", @tags={}, @uid=289426, @version=4, @lat=59.9502252, @id=123, @lon=10.7899133>
 
-Modification of data is supported too.
+Modification of data is supported too. According to the OSM license every modification to the data has to be done by a registered OSM user account. The user can be authenticated with username and password. But see yourself:
 
     client = OpenStreetMap::BasicAuthClient.new('osm_user_nane', 'password')
     api = OpenStreetMap::Api.new(client)
@@ -23,20 +39,19 @@ Modification of data is supported too.
 
 Yeah, i can hear you sayin: 'Seriously, do i have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: OAuth! It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a save place.
 
-    consumer = OAuth::Consumer.new(  'osm_app_key', 'osm_app_secret',
-                          { :site => 'http://www.openstreetmap.org',
-                            :request_token_path => '/oauth/request_token',
-                            :access_token_path => '/oauth/access_token',
-                            :authorize_path => '/oauth/authorize'
-                          })
+    consumer = OAuth::Consumer.new( 'osm_app_key', 'osm_app_secret',
+                                    { :site => 'http://www.openstreetmap.org',
+                                      :request_token_path => '/oauth/request_token',
+                                      :access_token_path => '/oauth/access_token',
+                                      :authorize_path => '/oauth/authorize'
+                                    })
     access_token = OAuth::AccessToken.new(consumer, 'osm_user_token', 'osm_user_key')
     client = OpenStreetMap::OauthClient.new(access_token)
     api = OpenStreetMap::Api.new(client)
     node = OpenStreetMap::Node.new(:lat => 52.0, :lon => 13.4)
     api.save(node)
 
-Every request to the API which requires authentication, which is mainly write access, is now handled by the OauthClient. Does that sound good?
-
+Every request to the API is now handled by the OauthClient.
 
 
 ## Feedback and Contributions
