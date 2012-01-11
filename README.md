@@ -9,7 +9,7 @@ This is an API client for the current OpenStreetMap API v0.6
 
 It provides easy access to OpenStreetMap (OSM) data. OK, gimme some code:
 
-    require 'rosm'
+    require 'openstreetmap'
     api = OpenStreetMap::Api.new
     node = api.find_node(123)
      => #<OpenStreetMap::Node:0x1019268d0 @changeset=7836598, @timestamp=Mon Apr 11 19:40:43 UTC 2011, @user="Turleder'n", @tags={}, @uid=289426, @version=4, @lat=59.9502252, @id=123, @lon=10.7899133>
