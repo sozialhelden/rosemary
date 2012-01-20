@@ -48,6 +48,8 @@ module OpenStreetMap
   # Unspecified API server error.
   class ServerError < Error; end # 500
 
+  class Unavailable < Error; end # 503
+
   class NotImplemented < Error; end # This method is not implemented yet.
 
 end

@@ -162,28 +162,36 @@ module OpenStreetMap
 
     # Do a API request without authentication
     def do_request(method, url, options = {})
-      response = self.class.send(method, url, options)
-      check_response_codes(response)
-      response
+      begin
+        response = self.class.send(method, url, options)
+        check_response_codes(response)
+        response
+      rescue Timeout::Error
+        raise OpenStreetMap::Unavailable.new('Service Unavailable')
+      end
     end
 
     # Do a API request with authentication, using the given client
     def do_authenticated_request(method, url, options = {})
-      response = case client
-      when OpenStreetMap::BasicAuthClient
-        self.class.send(method, url, options.merge(:basic_auth => client.credentials))
-      when OpenStreetMap::OauthClient
-        # We have to wrap the result of the access_token request into an HTTParty::Response object
-        # to keep duck typing with HTTParty
-        result = client.send(method, ("/api/#{API_VERSION}" + url), options)
-        content_type = result.content_type.split('/').last
-        parsed_response = HTTParty::Parser.call(result.body, content_type.to_sym)
-        HTTParty::Response.new(nil, result, parsed_response)
-      else
-        raise OpenStreetMapp::CredentialsMissing
+      begin
+        response = case client
+        when OpenStreetMap::BasicAuthClient
+          self.class.send(method, url, options.merge(:basic_auth => client.credentials))
+        when OpenStreetMap::OauthClient
+          # We have to wrap the result of the access_token request into an HTTParty::Response object
+          # to keep duck typing with HTTParty
+          result = client.send(method, ("/api/#{API_VERSION}" + url), options)
+          content_type = result.content_type.split('/').last
+          parsed_response = HTTParty::Parser.call(result.body, content_type.to_sym)
+          HTTParty::Response.new(nil, result, parsed_response)
+        else
+          raise OpenStreetMapp::CredentialsMissing
+        end
+        check_response_codes(response)
+        response
+      rescue Timeout::Error
+        raise OpenStreetMap::Unavailable.new('Service Unavailable')
       end
-      check_response_codes(response)
-      response
     end
 
     def find_open_changeset
@@ -206,6 +214,7 @@ module OpenStreetMap
         when 410 then raise Gone.new(body)
         when 412 then raise Precondition.new(body)
         when 500 then raise ServerError
+        when 503 then raise Unavailable.new('Service Unavailable')
         else raise Error
       end
     end

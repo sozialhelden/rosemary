@@ -83,6 +83,13 @@ describe 'OpenStreetMap' do
         node['wheelchair'].should eql 'yes'
       end
 
+      it "should raise a Unavailable, when api times out" do
+        stubbed_request.to_timeout
+        lambda {
+          node = osm.find_node(1234)
+        }.should raise_error(OpenStreetMap::Unavailable)
+      end
+
       it "should raise an Gone error, when a node has been deleted" do
         stubbed_request.to_return(:status => 410, :body => '', :headers => {'Content-Type' => 'text/plain'})
         lambda {
@@ -131,6 +138,13 @@ describe 'OpenStreetMap' do
           stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
           node.id.should be_nil
           new_id = osm.save(node)
+        end
+
+        it "should raise a Unavailable, when api times out" do
+          stubbed_request.to_timeout
+          lambda {
+            new_id = osm.save(node)
+          }.should raise_error(OpenStreetMap::Unavailable)
         end
 
         it "should not create a Node with invalid xml but raise BadRequest" do
@@ -294,6 +308,14 @@ describe 'OpenStreetMap' do
           node.id.should be_nil
           new_id = osm.save(node)
         end
+        
+        it "should raise a Unavailable, when api times out" do
+          stubbed_request.to_timeout
+          lambda {
+            new_id = osm.save(node)
+          }.should raise_error(OpenStreetMap::Unavailable)
+        end
+        
 
         it "should not create a Node with invalid xml but raise BadRequest" do
           stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
