@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "openstreetmap"
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christoph B\u{fc}nte"]
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.html", "README.md", "lib/changeset_callbacks.rb", "lib/hash.rb", "lib/open_street_map/api.rb", "lib/open_street_map/basic_auth_client.rb", "lib/open_street_map/changeset.rb", "lib/open_street_map/element.rb", "lib/open_street_map/errors.rb", "lib/open_street_map/node.rb", "lib/open_street_map/oauth_client.rb", "lib/open_street_map/relation.rb", "lib/open_street_map/tags.rb", "lib/open_street_map/user.rb", "lib/open_street_map/way.rb", "lib/openstreetmap.rb"]
   s.files = ["CHANGELOG", "LICENSE", "Manifest", "README.html", "README.md", "Rakefile", "lib/changeset_callbacks.rb", "lib/hash.rb", "lib/open_street_map/api.rb", "lib/open_street_map/basic_auth_client.rb", "lib/open_street_map/changeset.rb", "lib/open_street_map/element.rb", "lib/open_street_map/errors.rb", "lib/open_street_map/node.rb", "lib/open_street_map/oauth_client.rb", "lib/open_street_map/relation.rb", "lib/open_street_map/tags.rb", "lib/open_street_map/user.rb", "lib/open_street_map/way.rb", "lib/openstreetmap.rb", "openstreetmap.gemspec", "spec/open_street_map/changeset_spec.rb", "spec/open_street_map/node_spec.rb", "spec/open_street_map/way_spec.rb", "spec/open_street_map_changeset_spec.rb", "spec/open_street_map_node_spec.rb", "spec/open_street_map_way_spec.rb"]
   s.homepage = "https://github.com/sozialhelden/openstreetmap"
-  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Openstreetmap", "--main", "README.html"]
+  s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Openstreetmap", "--main", "README.md"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "openstreetmap"
   s.rubygems_version = "1.8.15"

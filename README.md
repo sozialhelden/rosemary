@@ -28,7 +28,7 @@ Put this in your Gemfile
     # Gemfile
     gem 'openstreetmap', :git => 'git://github.com/sozialhelden/openstreetmap'
 
-The run
+Then run
 
     bundle install
 

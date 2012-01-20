@@ -1,7 +1,6 @@
 CHANGELOG
 LICENSE
 Manifest
-README.html
 README.md
 Rakefile
 lib/changeset_callbacks.rb

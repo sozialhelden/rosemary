@@ -2,7 +2,7 @@
 require 'rake'
 require 'echoe'
 
-Echoe.new('openstreetmap', '0.1.0') do |p|
+Echoe.new('openstreetmap', '0.1.1') do |p|
 
  p.description = "OpenStreetMap API client for ruby"
  p.url         = "https://github.com/sozialhelden/openstreetmap"
