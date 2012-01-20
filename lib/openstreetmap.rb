@@ -1,5 +1,5 @@
 require 'hash'
-require 'callbacks'
+require 'changeset_callbacks'
 require 'open_street_map/tags'
 require 'open_street_map/element'
 require 'open_street_map/node'
