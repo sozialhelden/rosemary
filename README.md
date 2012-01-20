@@ -21,6 +21,17 @@ OpenStreetMap data is published under an open content license, with the intentio
 All data added to the project need to have a license compatible with the Creative Commons Attribution-Share Alike license. This can include out of copyright information, public domain or other licenses. All contributors must register with the project and agree to provide data on a Creative Commons CC-BY-SA 2.0 licence, or determine that the licensing of the source data is suitable; this may involve examining licences for government data to establish whether they are compatible.
 Due to the license switch, data added in future must be compatible with both the Open Database License and the new Contributor Terms in order to be accepted.
 
+## Installation
+
+Put this in your Gemfile
+
+    # Gemfile
+    gem 'openstreetmap', :git => 'git://github.com/sozialhelden/openstreetmap'
+
+The run
+
+    bundle install
+
 ## Getting started
 
 OK, gimme some code:

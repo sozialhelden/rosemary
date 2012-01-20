@@ -6,7 +6,7 @@ Echoe.new('openstreetmap', '0.1.0') do |p|
 
  p.description = "OpenStreetMap API client for ruby"
  p.url         = "https://github.com/sozialhelden/openstreetmap"
- p.author      = ["Christoph Bünte"]
+ p.author      = ["Christoph B\303\274nte"]
  p.email       = ["info@christophbuente.de"]
 
  p.retain_gemspec = true

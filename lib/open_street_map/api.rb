@@ -2,7 +2,7 @@ require 'httparty'
 module OpenStreetMap
   class Api
     include HTTParty
-    include Callbacks
+    include ChangesetCallbacks
     API_VERSION = "0.6".freeze
 
     # the default base URI for the API

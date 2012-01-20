@@ -1,9 +1,10 @@
 CHANGELOG
 LICENSE
 Manifest
+README.html
 README.md
 Rakefile
-lib/callbacks.rb
+lib/changeset_callbacks.rb
 lib/hash.rb
 lib/open_street_map/api.rb
 lib/open_street_map/basic_auth_client.rb
