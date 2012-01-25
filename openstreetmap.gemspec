@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christoph B\u{fc}nte"]
-  s.date = "2012-01-20"
+  s.date = "2012-01-25"
   s.description = "OpenStreetMap API client for ruby"
   s.email = ["info@christophbuente.de"]
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md", "lib/changeset_callbacks.rb", "lib/hash.rb", "lib/open_street_map/api.rb", "lib/open_street_map/basic_auth_client.rb", "lib/open_street_map/changeset.rb", "lib/open_street_map/element.rb", "lib/open_street_map/errors.rb", "lib/open_street_map/node.rb", "lib/open_street_map/oauth_client.rb", "lib/open_street_map/relation.rb", "lib/open_street_map/tags.rb", "lib/open_street_map/user.rb", "lib/open_street_map/way.rb", "lib/openstreetmap.rb"]
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<httparty>, [">= 0"])
       s.add_runtime_dependency(%q<builder>, [">= 0"])
       s.add_runtime_dependency(%q<oauth>, [">= 0"])
+      s.add_runtime_dependency(%q<jnunemaker-validatable>, [">= 0"])
       s.add_development_dependency(%q<echoe>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<webmock>, [">= 0"])
@@ -32,6 +33,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<httparty>, [">= 0"])
       s.add_dependency(%q<builder>, [">= 0"])
       s.add_dependency(%q<oauth>, [">= 0"])
+      s.add_dependency(%q<jnunemaker-validatable>, [">= 0"])
       s.add_dependency(%q<echoe>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<webmock>, [">= 0"])
@@ -40,6 +42,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<httparty>, [">= 0"])
     s.add_dependency(%q<builder>, [">= 0"])
     s.add_dependency(%q<oauth>, [">= 0"])
+    s.add_dependency(%q<jnunemaker-validatable>, [">= 0"])
     s.add_dependency(%q<echoe>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<webmock>, [">= 0"])

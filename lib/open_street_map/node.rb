@@ -9,12 +9,14 @@ module OpenStreetMap
   #   node = OpenStreetMap::Node.find(17)
   #
   class Node < Element
-
     # Longitude in decimal degrees
-    attr_reader :lon
+    attr_accessor :lon
 
     # Latitude in decimal degrees
-    attr_reader :lat
+    attr_accessor :lat
+
+    validates_presence_of     :lat, :lon
+    validates_numericality_of :lat, :lon
 
     # Create new Node object.
     #

@@ -1,4 +1,5 @@
 require 'hash'
+require 'validatable'
 require 'changeset_callbacks'
 require 'open_street_map/tags'
 require 'open_street_map/element'

@@ -13,6 +13,16 @@ describe 'OpenStreetMap::Node' do
                             :timestamp  => "2005-07-30T14:27:12+01:00")
   end
 
+  it "should be valid" do
+    node.should be_valid
+  end
+
+  it "should be invalid without lat, lon" do
+    node.lat = nil
+    node.lon = nil
+    node.should_not be_valid
+  end
+
   it "should have an id attribute set from attributes" do
     node.id.should eql(123)
   end
