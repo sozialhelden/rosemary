@@ -1,7 +1,7 @@
 module OpenStreetMap
   # This is a virtual parent class for the OSM objects Node, Way and Relation.
   class Element
-    include Validatable
+    include ActiveModel::Validations
 
     # Unique ID
     attr_reader :id

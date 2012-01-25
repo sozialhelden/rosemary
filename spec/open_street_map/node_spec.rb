@@ -23,6 +23,16 @@ describe 'OpenStreetMap::Node' do
     node.should_not be_valid
   end
 
+  it "should not be valid when using to large lat value" do
+    node.lat = 181
+    node.should_not be_valid
+  end
+
+  it "should not be valid when using to large lat value" do
+    node.lon = 91
+    node.should_not be_valid
+  end
+
   it "should have an id attribute set from attributes" do
     node.id.should eql(123)
   end
