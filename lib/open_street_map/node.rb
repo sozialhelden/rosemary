@@ -44,7 +44,7 @@ module OpenStreetMap
       xml.osm do
         xml.node(attributes) do
           tags.each do |k,v|
-            xml.tag(:k => k, :v => v)
+            xml.tag(:k => k, :v => v) unless v.blank?
           end unless tags.empty?
         end
       end

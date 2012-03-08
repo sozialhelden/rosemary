@@ -16,7 +16,7 @@ module OpenStreetMap
     # If +id+ is +nil+ a new unique negative ID will be allocated.
     def initialize(attrs)
       attrs.stringify_keys!
-      @members = attrs('members')
+      @members = attrs['member']
       super(attrs)
     end
 
