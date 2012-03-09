@@ -131,11 +131,6 @@ module OpenStreetMap
       do_request(:get, url, options)
     end
 
-    def self.get(*args)
-      puts args.inspect
-      super(*args)
-    end
-
     # all PUT requests need authorization, so this is the stanard
     def put(url, options = {})
       do_authenticated_request(:put, url, options)
@@ -173,7 +168,6 @@ module OpenStreetMap
           # to keep duck typing with HTTParty
           result = client.send(method, ("/api/#{API_VERSION}" + url), options)
           content_type = OsmParser.format_from_mimetype(result.content_type)
-          puts "parsing content type: '#{content_type}'"
           parsed_response = OsmParser.call(result.body, content_type)
           HTTParty::Response.new(nil, result, parsed_response)
         else

@@ -1,10 +1,18 @@
 require 'httparty'
 require 'xml/libxml'
 class OsmParser < HTTParty::Parser
-
   include LibXML::XML::SaxParser::Callbacks
 
   attr_accessor :context, :description, :lang, :collection
+
+  def parse
+    return nil if body.nil? || body.empty?
+    if supports_format?
+      self.send(format) # This is a hack, cause the xml format would not be recognized ways, but for nodes and relations
+    else
+      body
+    end
+  end
 
   def xml
     @parser = LibXML::XML::SaxParser.string(body)
@@ -88,7 +96,7 @@ class OsmParser < HTTParty::Parser
   end
 
   def _nd(attr_hash)
-    @context.nodes << attr_hash['ref']
+    @context << attr_hash['ref']
   end
 
   def _tag(attr_hash)
