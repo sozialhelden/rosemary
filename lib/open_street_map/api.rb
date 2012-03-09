@@ -11,6 +11,8 @@ module OpenStreetMap
 
     default_timeout 5
 
+    parser OsmParser
+
     attr_accessor :client
 
     attr_accessor :changeset
@@ -61,8 +63,9 @@ module OpenStreetMap
     #
     def find_user
       raise CredentialsMissing if client.nil?
-      response = do_authenticated_request(:get, "/user/details")
-      user = OpenStreetMap::User.new(response['osm']['user'])
+      resp = do_authenticated_request(:get, "/user/details")
+      raise resp if resp.is_a? String
+      resp
     end
 
     # Delete an element
@@ -106,15 +109,8 @@ module OpenStreetMap
 
     def find_changesets_for_user(options = {})
       user_id = find_user.id
-      response = get("/changesets", :query => options.merge({:user => user_id}))
-      case response['osm']['changeset']
-      when Array
-        response['osm']['changeset'].map{|h| OpenStreetMap::Changeset.new(h)}
-      when Hash
-        [OpenStreetMap::Changeset.new(response['osm']['changeset'])]
-      else
-        []
-      end
+      changesets = get("/changesets", :query => options.merge({:user => user_id}))
+      changesets.nil? ? [] : changesets
     end
 
     private
@@ -127,22 +123,17 @@ module OpenStreetMap
       raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation|changeset)$/
       raise TypeError.new('id needs to be a positive integer') unless(id.kind_of?(Fixnum) && id > 0)
       response = get("/#{type}/#{id}")
-      check_response_codes(response)
-      case type
-      when 'node'
-        OpenStreetMap::Node.new(response['osm']['node'])
-      when 'way'
-        OpenStreetMap::Way.new(response['osm']['way'])
-      when 'relation'
-        OpenStreetMap::Relation.new(response['osm']['relation'])
-      when 'changeset'
-        OpenStreetMap::Changeset.new(response['osm']['changeset'])
-      end
+      response.is_a?(Array ) ? response.first : response
     end
 
     # most GET requests are valid without authentication, so this is the standard
     def get(url, options = {})
       do_request(:get, url, options)
+    end
+
+    def self.get(*args)
+      puts args.inspect
+      super(*args)
     end
 
     # all PUT requests need authorization, so this is the stanard
@@ -165,7 +156,7 @@ module OpenStreetMap
       begin
         response = self.class.send(method, url, options)
         check_response_codes(response)
-        response
+        response.parsed_response
       rescue Timeout::Error
         raise OpenStreetMap::Unavailable.new('Service Unavailable')
       end
@@ -181,14 +172,15 @@ module OpenStreetMap
           # We have to wrap the result of the access_token request into an HTTParty::Response object
           # to keep duck typing with HTTParty
           result = client.send(method, ("/api/#{API_VERSION}" + url), options)
-          content_type = result.content_type.split('/').last
-          parsed_response = HTTParty::Parser.call(result.body, content_type.to_sym)
+          content_type = OsmParser.format_from_mimetype(result.content_type)
+          puts "parsing content type: '#{content_type}'"
+          parsed_response = OsmParser.call(result.body, content_type)
           HTTParty::Response.new(nil, result, parsed_response)
         else
           raise OpenStreetMapp::CredentialsMissing
         end
         check_response_codes(response)
-        response
+        response.parsed_response
       rescue Timeout::Error
         raise OpenStreetMap::Unavailable.new('Service Unavailable')
       end

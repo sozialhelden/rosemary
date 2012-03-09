@@ -43,9 +43,7 @@ module OpenStreetMap
       xml.instruct! unless options[:skip_instruct]
       xml.osm do
         xml.node(attributes) do
-          tags.each do |k,v|
-            xml.tag(:k => k, :v => v) unless v.blank?
-          end unless tags.empty?
+          tags.to_xml(:builder => xml, :indent => 2, :skip_instruct => true)
         end
       end
     end

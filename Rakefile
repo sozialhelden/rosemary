@@ -20,7 +20,7 @@ Echoe.new('openstreetmap', '0.1.3') do |p|
    *.tmproj
  }
 
- p.runtime_dependencies     = [ "httparty", "builder", "oauth", "activemodel" ]
+ p.runtime_dependencies     = [ "httparty", "libxml-ruby", "builder", "oauth", "activemodel" ]
  p.development_dependencies = [ "echoe", "rspec", "webmock" ]
 end
 

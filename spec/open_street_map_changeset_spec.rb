@@ -74,9 +74,9 @@ describe 'OpenStreetMap' do
 
       it "should build a Change from API response via find_changeset_object" do
         stubbed_request.to_return(:status => 200, :body => single_changeset, :headers => {'Content-Type' => 'application/xml'})
-        node = osm.find_changeset(10)
+        changeset = osm.find_changeset(10)
         assert_requested :get, request_url, :times => 1
-        node.class.should eql OpenStreetMap::Changeset
+        changeset.class.should eql OpenStreetMap::Changeset
       end
 
       it "should raise an NotFound error, when a changeset cannot be found" do

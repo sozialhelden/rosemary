@@ -308,14 +308,14 @@ describe 'OpenStreetMap' do
           node.id.should be_nil
           new_id = osm.save(node)
         end
-        
+
         it "should raise a Unavailable, when api times out" do
           stubbed_request.to_timeout
           lambda {
             new_id = osm.save(node)
           }.should raise_error(OpenStreetMap::Unavailable)
         end
-        
+
 
         it "should not create a Node with invalid xml but raise BadRequest" do
           stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})

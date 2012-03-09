@@ -22,7 +22,7 @@ module OpenStreetMap
       @nodes = attrs['nd'].collect do |node_hash|
         node_hash.stringify_keys!
         node_hash['ref'].to_i
-      end
+      end if attrs['nd']
       super(attrs)
     end
 
@@ -50,7 +50,5 @@ module OpenStreetMap
         end
       end
     end
-
-
   end
 end

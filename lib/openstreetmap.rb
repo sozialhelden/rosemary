@@ -11,6 +11,7 @@ require 'open_street_map/user'
 require 'open_street_map/errors'
 require 'open_street_map/basic_auth_client'
 require 'open_street_map/oauth_client'
+require 'osm_parser'
 require 'open_street_map/api'
 require 'oauth'
 

@@ -6,10 +6,13 @@ module OpenStreetMap
 
     # Return XML for these tags. This method uses the Builder library.
     # The only parameter ist the builder object.
-    def to_xml(xml)
+    def to_xml(options = {})
+      options[:indent] ||= 0
+      xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+      xml.instruct! unless options[:skip_instruct]
       each do |key, value|
         xml.tag(:k => key, :v => value)
-      end
+      end unless empty?
     end
 
     # Return string with comma separated key=value pairs.

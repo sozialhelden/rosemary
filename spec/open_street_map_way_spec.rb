@@ -11,12 +11,17 @@ describe 'OpenStreetMap' do
     OpenStreetMap::Api.new
   end
 
+  let :stub_way_lookup do
+    stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
+  end
+
+
   describe '::Way' do
 
     def valid_fake_way
       way=<<-EOF
       <osm>
-       <way id="123" version="142" changeset="12" user="fred" uid="123" visible="true" timestamp="2005-07-30T14:27:12+01:00">
+       <way id="1234" version="142" changeset="12" user="fred" uid="123" visible="true" timestamp="2005-07-30T14:27:12+01:00">
          <tag k="note" v="Just a way"/>
          <nd ref="15735248"/>
          <nd ref="169269997"/>
@@ -38,6 +43,8 @@ describe 'OpenStreetMap' do
 
       it "should build a Way from API response via get_way" do
         stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
+#        raise OsmParser.supports_format?(OsmParser.format_from_mimetype('application/xml')).inspect
+        puts OsmParser.supported_formats
         way = osm.find_way(1234)
         way.class.should eql OpenStreetMap::Way
         way.nodes.should include(15735246)
