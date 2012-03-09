@@ -29,7 +29,9 @@ module OpenStreetMap
 
     # Return XML for this way. This method uses the Builder library.
     # The only parameter ist the builder object.
-    def to_xml(xml)
+    def to_xml(options = {})
+      xml = options[:builder] ||= Builder::XmlMarkup.new
+      xml.instruct! unless options[:skip_instruct]
       xml.member(:type => type, :ref => ref, :role => role)
     end
 

@@ -1,6 +1,6 @@
 require 'httparty'
 require 'xml/libxml'
-class OsmParser < HTTParty::Parser
+class OpenStreetMap::Parser < HTTParty::Parser
   include LibXML::XML::SaxParser::Callbacks
 
   attr_accessor :context, :description, :lang, :collection

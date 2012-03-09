@@ -11,7 +11,7 @@ module OpenStreetMap
 
     default_timeout 5
 
-    parser OsmParser
+    parser Parser
 
     attr_accessor :client
 
@@ -98,7 +98,7 @@ module OpenStreetMap
     end
 
     def create_changeset
-      changeset = OpenStreetMap::Changeset.new
+      changeset = Changeset.new
       changeset_id = put("/changeset/create", :body => changeset.to_xml).body.to_i
       find_changeset(changeset_id) unless changeset_id == 0
     end
@@ -153,7 +153,7 @@ module OpenStreetMap
         check_response_codes(response)
         response.parsed_response
       rescue Timeout::Error
-        raise OpenStreetMap::Unavailable.new('Service Unavailable')
+        raise Unavailable.new('Service Unavailable')
       end
     end
 
@@ -161,22 +161,22 @@ module OpenStreetMap
     def do_authenticated_request(method, url, options = {})
       begin
         response = case client
-        when OpenStreetMap::BasicAuthClient
+        when BasicAuthClient
           self.class.send(method, url, options.merge(:basic_auth => client.credentials))
-        when OpenStreetMap::OauthClient
+        when OauthClient
           # We have to wrap the result of the access_token request into an HTTParty::Response object
           # to keep duck typing with HTTParty
           result = client.send(method, ("/api/#{API_VERSION}" + url), options)
-          content_type = OsmParser.format_from_mimetype(result.content_type)
-          parsed_response = OsmParser.call(result.body, content_type)
+          content_type = Parser.format_from_mimetype(result.content_type)
+          parsed_response = Parser.call(result.body, content_type)
           HTTParty::Response.new(nil, result, parsed_response)
         else
-          raise OpenStreetMapp::CredentialsMissing
+          raise CredentialsMissing
         end
         check_response_codes(response)
         response.parsed_response
       rescue Timeout::Error
-        raise OpenStreetMap::Unavailable.new('Service Unavailable')
+        raise Unavailable.new('Service Unavailable')
       end
     end
 

@@ -64,18 +64,19 @@ module OpenStreetMap
       [:id, :version, :uid, :user, :timestamp, :changeset]
     end
 
+    def self.from_xml(xml_string)
+      Parser.call(xml_string, :xml)
+    end
+
     def to_xml(options = {})
-      options[:indent] ||= 0
-      xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+      xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]
       xml.osm do
         xml.way(attributes) do
-          tags.each do |k,v|
-            xml.tag(:k => k, :v => v)
-          end unless tags.empty?
           nodes.each do |node_id|
             xml.nd(:ref => node_id)
           end unless nodes.empty?
+          tags.to_xml(:builder => xml, :skip_instruct => true)
         end
       end
     end

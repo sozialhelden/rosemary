@@ -2,33 +2,47 @@ require 'openstreetmap'
 
 describe 'OpenStreetMap::Way' do
 
+  def valid_fake_way
+    way=<<-EOF
+    <osm>
+     <way id="1234" version="142" changeset="12" user="fred" uid="123" visible="true" timestamp="2005-07-30T14:27:12+01:00">
+       <tag k="note" v="Just a way"/>
+       <nd ref="15735248"/>
+       <nd ref="169269997"/>
+       <nd ref="169270001"/>
+       <nd ref="15735251"/>
+       <nd ref="15735252"/>
+       <nd ref="15735253"/>
+       <nd ref="15735250"/>
+       <nd ref="15735247"/>
+       <nd ref="15735246"/>
+       <nd ref="15735249"/>
+       <nd ref="15735248"/>
+     </way>
+    </osm>
+    EOF
+  end
+
   subject do
-    @way ||= OpenStreetMap::Way.new(  :id         => "123",
-                                      :changeset  => "12",
-                                      :user       => "fred",
-                                      :uid        => "123",
-                                      :visible    => true,
-                                      :timestamp  => "2005-07-30T14:27:12+01:00")
-    @way  << [1, 2, 3, 4]
-    @way
+    @way ||= OpenStreetMap::Way.from_xml(valid_fake_way)
   end
 
   it "should have 4 nodes" do
-    subject.nodes.size.should eql 4
-    subject.nodes.first.should eql 1
+    subject.nodes.size.should eql 11
+    subject.nodes.first.should eql 15735248
   end
 
   it "should have node referenzes in xml representation" do
-    subject.to_xml.should match /ref=\"1\"/
+    subject.to_xml.should match /ref=\"15735248\"/
   end
 
 
   it "should have an id attribute set from attributes" do
-    subject.id.should eql(123)
+    subject.id.should eql(1234)
   end
 
   it "should have an id attribute within xml representation" do
-    subject.to_xml.should match /id=\"123\"/
+    subject.to_xml.should match /id=\"1234\"/
   end
 
   it "should have a user attributes set from attributes" do

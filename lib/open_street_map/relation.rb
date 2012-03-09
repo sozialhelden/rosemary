@@ -24,6 +24,19 @@ module OpenStreetMap
       'relation'
     end
 
+    # Return XML for this relation. This method uses the Builder library.
+    # The only parameter ist the builder object.
+    def to_xml(option = {})
+      xml = options[:builder] ||= Builder::XmlMarkup.new
+      xml.instruct! unless options[:skip_instruct]
+      xml.relation(attributes) do
+        members.each do |member|
+          member.to_xml(:builder => xml, :skip_instruct => true)
+        end
+        tags.to_xml(:builder => xml, :skip_instruct => true)
+      end
+    end
+
     protected
 
     def extract_member(member_array)

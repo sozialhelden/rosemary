@@ -78,8 +78,7 @@ module OpenStreetMap
     end
 
     def to_xml(options = {})
-      options[:indent] ||= 0
-      xml = options[:builder] ||= Builder::XmlMarkup.new(:indent => options[:indent])
+      xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]
       xml.osm do
         xml.changeset(attributes) do
