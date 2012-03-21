@@ -99,7 +99,7 @@ module OpenStreetMap
 
     def create_changeset
       changeset = Changeset.new
-      changeset_id = put("/changeset/create", :body => changeset.to_xml).body.to_i
+      changeset_id = put("/changeset/create", :body => changeset.to_xml).to_i
       find_changeset(changeset_id) unless changeset_id == 0
     end
 
