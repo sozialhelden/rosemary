@@ -211,6 +211,11 @@ module OpenStreetMap
       end
     end
 
+    def initialize_copy(from)
+      super
+      @tags = from.tags.dup
+    end
+
     private
 
     # Return next free ID
