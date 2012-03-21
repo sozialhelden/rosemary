@@ -6,7 +6,7 @@ module OpenStreetMap
     API_VERSION = "0.6".freeze
 
     # the default base URI for the API
-    base_uri "http://www.openstreetmap.org/api/#{API_VERSION}"
+    base_uri "http://www.openstreetmap.org"
     #base_uri "http://api06.dev.openstreetmap.org/api/#{API_VERSION}"
 
     default_timeout 5
@@ -162,7 +162,7 @@ module OpenStreetMap
       begin
         response = case client
         when BasicAuthClient
-          self.class.send(method, url, options.merge(:basic_auth => client.credentials))
+          self.class.send(method, ("/api/#{API_VERSION}" + url), options.merge(:basic_auth => client.credentials))
         when OauthClient
           # We have to wrap the result of the access_token request into an HTTParty::Response object
           # to keep duck typing with HTTParty
