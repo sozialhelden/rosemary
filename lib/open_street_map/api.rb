@@ -149,7 +149,7 @@ module OpenStreetMap
     # Do a API request without authentication
     def do_request(method, url, options = {})
       begin
-        response = self.class.send(method, url, options)
+        response = self.class.send(method, "/api/#{API_VERSION}" + url, options)
         check_response_codes(response)
         response.parsed_response
       rescue Timeout::Error
@@ -169,6 +169,7 @@ module OpenStreetMap
           result = client.send(method, ("/api/#{API_VERSION}" + url), options)
           content_type = Parser.format_from_mimetype(result.content_type)
           parsed_response = Parser.call(result.body, content_type)
+
           HTTParty::Response.new(nil, result, parsed_response)
         else
           raise CredentialsMissing
