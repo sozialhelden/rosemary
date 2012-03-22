@@ -146,10 +146,14 @@ module OpenStreetMap
       do_authenticated_request(:delete, url, options)
     end
 
+    def api_url(url)
+      "/api/#{API_VERSION}" + url
+    end
+
     # Do a API request without authentication
     def do_request(method, url, options = {})
       begin
-        response = self.class.send(method, "/api/#{API_VERSION}" + url, options)
+        response = self.class.send(method, api_url(url), options)
         check_response_codes(response)
         response.parsed_response
       rescue Timeout::Error
@@ -161,19 +165,19 @@ module OpenStreetMap
     def do_authenticated_request(method, url, options = {})
       begin
         response = case client
-        when BasicAuthClient
-          self.class.send(method, ("/api/#{API_VERSION}" + url), options.merge(:basic_auth => client.credentials))
-        when OauthClient
-          # We have to wrap the result of the access_token request into an HTTParty::Response object
-          # to keep duck typing with HTTParty
-          result = client.send(method, ("/api/#{API_VERSION}" + url), options)
-          content_type = Parser.format_from_mimetype(result.content_type)
-          parsed_response = Parser.call(result.body, content_type)
+                   when BasicAuthClient
+                     self.class.send(method, api_url(url), options.merge(:basic_auth => client.credentials))
+                   when OauthClient
+                     # We have to wrap the result of the access_token request into an HTTParty::Response object
+                     # to keep duck typing with HTTParty
+                     result = client.send(method, api_url(url), options)
+                     content_type = Parser.format_from_mimetype(result.content_type)
+                     parsed_response = Parser.call(result.body, content_type)
 
-          HTTParty::Response.new(nil, result, parsed_response)
-        else
-          raise CredentialsMissing
-        end
+                     HTTParty::Response.new(nil, result, parsed_response)
+                   else
+                     raise CredentialsMissing
+                   end
         check_response_codes(response)
         response.parsed_response
       rescue Timeout::Error
