@@ -2,12 +2,12 @@
 require 'rake'
 require 'echoe'
 
-Echoe.new('openstreetmap', '0.1.3') do |p|
+Echoe.new('openstreetmap', '0.2.0') do |p|
 
  p.description = "OpenStreetMap API client for ruby"
  p.url         = "https://github.com/sozialhelden/openstreetmap"
- p.author      = ["Christoph B\303\274nte"]
- p.email       = ["info@christophbuente.de"]
+ p.author      = ["Christoph B\303\274nte", "Enno Brehm"]
+ p.email       = ["info@christophbuente.de", "guildenstern@gmx.de"]
 
  p.retain_gemspec = true
 
