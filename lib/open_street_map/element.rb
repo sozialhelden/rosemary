@@ -118,6 +118,20 @@ module OpenStreetMap
       self    # return self so calls can be chained
     end
 
+    def update_attributes(attribute_hash)
+      dirty = false
+      attribute_hash.each do |key,value|
+        if self.send(key).to_s != value.to_s
+          self.send("#{key}=", value.to_s)
+          dirty = true
+        end
+      end
+
+      puts "returning #{dirty}"
+      dirty
+    end
+
+
     # Has this object any tags?
     #
     # call-seq: is_tagged?
