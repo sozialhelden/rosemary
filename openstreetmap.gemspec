@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Openstreetmap", "--main", "README.md"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "openstreetmap"
-  s.rubygems_version = "1.8.10"
+  s.rubygems_version = "1.8.16"
   s.summary = "OpenStreetMap API client for ruby"
 
   if s.respond_to? :specification_version then

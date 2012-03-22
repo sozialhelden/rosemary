@@ -20,7 +20,6 @@ lib/open_street_map/user.rb
 lib/open_street_map/way.rb
 lib/openstreetmap.rb
 openstreetmap.gemspec
-spec/api_spec.rb
 spec/open_street_map/changeset_spec.rb
 spec/open_street_map/node_spec.rb
 spec/open_street_map/relation_spec.rb
