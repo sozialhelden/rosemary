@@ -1,5 +1,15 @@
 require 'httparty'
 module Rosemary
+
+  # The Api class handles all calls to the OpenStreetMap API.
+  #
+  # Usage:
+  #   require 'rosemary'
+  #   auth_client = Rosemary::BasicAuthClient.new(:user_name => 'user', :password => 'a_password')
+  #   api = Rosemary::Api.new(auth_client)
+  #   @node = api.find_node(1234)
+  #   @node.tags << {:wheelchair => 'no'}
+  #   api.save(@node)
   class Api
     include HTTParty
     include ChangesetCallbacks

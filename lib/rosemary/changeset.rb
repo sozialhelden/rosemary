@@ -1,5 +1,6 @@
 require 'builder'
 module Rosemary
+  # Changeset is used in OpenStreetMap to bundle several changes into a kind of "commit"
   class Changeset
     # Unique ID
     attr_reader :id

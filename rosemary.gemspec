@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.description = "OpenStreetMap API client for ruby"
   s.email = ["info@christophbuente.de"]
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md", "lib/changeset_callbacks.rb", "lib/hash.rb", "lib/rosemary/api.rb", "lib/rosemary/basic_auth_client.rb", "lib/rosemary/changeset.rb", "lib/rosemary/element.rb", "lib/rosemary/errors.rb", "lib/rosemary/member.rb", "lib/rosemary/node.rb", "lib/rosemary/oauth_client.rb", "lib/rosemary/parser.rb", "lib/rosemary/relation.rb", "lib/rosemary/tags.rb", "lib/rosemary/user.rb", "lib/rosemary/way.rb", "lib/rosemary.rb"]
-  s.homepage = "https://github.com/sozialhelden/openstreetmap"
+  s.homepage = "https://github.com/sozialhelden/rosemary"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "OpenStreetMap", "--main", "README.md"]
   s.require_paths = ["lib"]
   s.rubyforge_project = "rosemary"

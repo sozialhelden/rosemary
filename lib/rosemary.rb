@@ -18,16 +18,7 @@ require 'rosemary/parser'
 require 'rosemary/api'
 require 'oauth'
 
-# The Rosemary class handles all calls to the OpenStreetMap API.
-#
-# Usage:
-#   require 'osm'
-#   auth_client = Rosemary::BasicAuthClient.new(:user_name => 'user', :password => 'a_password')
-#   osm = Rosemary.new(auth_client)
-#   @node = osm.find_node(1234)
-#   @node.tags << {:wheelchair => 'no'}
-#   osm.save(@node)
-#
+# The Rosemary module just handles class load.
 module Rosemary
 
 end
