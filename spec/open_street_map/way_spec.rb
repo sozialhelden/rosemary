@@ -1,4 +1,4 @@
-require 'openstreetmap'
+require 'spec_helper'
 
 describe 'OpenStreetMap::Way' do
 

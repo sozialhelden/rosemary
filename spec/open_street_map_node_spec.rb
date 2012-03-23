@@ -1,5 +1,4 @@
-require 'webmock/rspec'
-require 'openstreetmap'
+require 'spec_helper'
 
 describe 'OpenStreetMap' do
 

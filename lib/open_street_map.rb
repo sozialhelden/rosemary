@@ -1,3 +1,5 @@
+require "open_street_map/version"
+
 require 'hash'
 require 'active_model'
 require 'changeset_callbacks'
