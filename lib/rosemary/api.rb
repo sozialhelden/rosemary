@@ -87,6 +87,8 @@ module Rosemary
     end
 
     def create(element)
+      raise ChangesetMissing unless changeset.open?
+      element.changeset = changeset.id
       put("/#{element.type.downcase}/create", :body => element.to_xml)
     end
 

@@ -114,17 +114,9 @@ describe Rosemary::Node do
 
     describe '#create:' do
 
-      let :node do
-        Rosemary::Node.new
-      end
-
-      let :request_url do
-        "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create"
-      end
-
-      let :stubbed_request do
-        stub_request(:put, request_url)
-      end
+      let (:node) { Rosemary::Node.new }
+      let (:request_url)     { "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create" }
+      let (:stubbed_request) { stub_request(:put, request_url) }
 
       before do
         stub_changeset_lookup
@@ -165,6 +157,12 @@ describe Rosemary::Node do
         }.should raise_error(Rosemary::CredentialsMissing)
       end
 
+      it "should set a changeset" do
+        stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
+        node.changeset = nil
+        osm.save(node)
+        node.changeset.should == osm.changeset.id
+      end
     end
 
     describe '#update:' do
@@ -187,6 +185,14 @@ describe Rosemary::Node do
         new_version = osm.save(node)
         new_version.should eql 43
       end
+
+      it "should set a changeset" do
+        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        node.changeset = nil
+        osm.save(node)
+        node.changeset.should == osm.changeset.id
+      end
+
 
     end
 
@@ -254,6 +260,12 @@ describe Rosemary::Node do
         }.should raise_error Rosemary::Precondition
       end
 
+      it "should set the changeset an existing node" do
+        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        node.changeset = nil
+        new_version = osm.destroy(node)
+        node.changeset.should == osm.changeset.id
+      end
     end
   end
 
