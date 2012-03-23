@@ -74,4 +74,9 @@ describe 'Rosemary::Way' do
     subject.to_xml.should match /k=\"wheelchair\"/
     subject.to_xml.should match /v=\"yes\"/
   end
+
+  it "should not add tags with empty value to xml" do
+    subject.add_tags(:wheelchair => '')
+    subject.to_xml.should_not match /k=\"wheelchair\"/
+  end
 end

@@ -10,7 +10,7 @@ module Rosemary
       xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]
       each do |key, value|
-        xml.tag(:k => key, :v => value)
+        xml.tag(:k => key, :v => value) unless value.blank?
       end unless empty?
     end
 
