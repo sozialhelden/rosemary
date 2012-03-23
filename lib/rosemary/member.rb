@@ -1,5 +1,5 @@
 require 'builder'
-module OpenStreetMap
+module Rosemary
   # A member of an OpenStreetMap Relation.
   class Member
 

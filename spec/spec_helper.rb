@@ -1,3 +1,3 @@
 require 'webmock/rspec'
-require 'open_street_map'
+require 'rosemary'
 

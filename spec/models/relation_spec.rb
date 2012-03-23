@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'OpenStreetMap::Relation' do
+describe 'Rosemary::Relation' do
 
   subject do
-    OpenStreetMap::Relation.new(:id         => "123",
+    Rosemary::Relation.new(:id         => "123",
                                 :lat        => "52.2",
                                 :lon        => "13.4",
                                 :changeset  => "12",

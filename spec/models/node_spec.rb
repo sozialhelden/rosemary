@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'OpenStreetMap::Node' do
+describe 'Rosemary::Node' do
 
   subject do
-    OpenStreetMap::Node.new(:id         => "123",
+    Rosemary::Node.new(:id         => "123",
                             :lat        => "52.2",
                             :lon        => "13.4",
                             :changeset  => "12",

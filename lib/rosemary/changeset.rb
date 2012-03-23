@@ -1,5 +1,5 @@
 require 'builder'
-module OpenStreetMap
+module Rosemary
   class Changeset
     # Unique ID
     attr_reader :id

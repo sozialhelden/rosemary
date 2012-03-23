@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'OpenStreetMap::Changeset' do
+describe 'Rosemary::Changeset' do
 
   let :changeset do
-    OpenStreetMap::Changeset.new( :id => "123",
+    Rosemary::Changeset.new( :id => "123",
                                   :user => "fred",
                                   :uid => "123",
                                   :created_at => "2008-11-08T19:07:39+01:00",

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'OpenStreetMap::Way' do
+describe 'Rosemary::Way' do
 
   def valid_fake_way
     way=<<-EOF
@@ -24,7 +24,7 @@ describe 'OpenStreetMap::Way' do
   end
 
   subject do
-    @way ||= OpenStreetMap::Way.from_xml(valid_fake_way)
+    @way ||= Rosemary::Way.from_xml(valid_fake_way)
   end
 
   it "should have 4 nodes" do

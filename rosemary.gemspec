@@ -1,21 +1,21 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "open_street_map/version"
+require "rosemary/version"
 
 Gem::Specification.new do |s|
-  s.name = "open_street_map"
-  s.version = OpenStreetMap::VERSION
+  s.name = "rosemary"
+  s.version = Rosemary::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christoph B\u{fc}nte, Enno Brehm"]
   s.date = "2012-03-22"
   s.description = "OpenStreetMap API client for ruby"
   s.email = ["info@christophbuente.de"]
-  s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md", "lib/changeset_callbacks.rb", "lib/hash.rb", "lib/open_street_map/api.rb", "lib/open_street_map/basic_auth_client.rb", "lib/open_street_map/changeset.rb", "lib/open_street_map/element.rb", "lib/open_street_map/errors.rb", "lib/open_street_map/member.rb", "lib/open_street_map/node.rb", "lib/open_street_map/oauth_client.rb", "lib/open_street_map/parser.rb", "lib/open_street_map/relation.rb", "lib/open_street_map/tags.rb", "lib/open_street_map/user.rb", "lib/open_street_map/way.rb", "lib/open_street_map.rb"]
+  s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md", "lib/changeset_callbacks.rb", "lib/hash.rb", "lib/rosemary/api.rb", "lib/rosemary/basic_auth_client.rb", "lib/rosemary/changeset.rb", "lib/rosemary/element.rb", "lib/rosemary/errors.rb", "lib/rosemary/member.rb", "lib/rosemary/node.rb", "lib/rosemary/oauth_client.rb", "lib/rosemary/parser.rb", "lib/rosemary/relation.rb", "lib/rosemary/tags.rb", "lib/rosemary/user.rb", "lib/rosemary/way.rb", "lib/rosemary.rb"]
   s.homepage = "https://github.com/sozialhelden/openstreetmap"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "OpenStreetMap", "--main", "README.md"]
   s.require_paths = ["lib"]
-  s.rubyforge_project = "open_street_map"
+  s.rubyforge_project = "rosemary"
   s.rubygems_version = "1.8.10"
 
   s.summary = "OpenStreetMap API client for ruby"

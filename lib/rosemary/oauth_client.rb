@@ -1,4 +1,4 @@
-module OpenStreetMap
+module Rosemary
   class OauthClient
 
     attr_reader :access_token

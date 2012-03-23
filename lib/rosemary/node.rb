@@ -1,12 +1,12 @@
 require 'builder'
-module OpenStreetMap
+module Rosemary
   # OpenStreetMap Node.
   #
-  # To create a new OpenStreetMap::Node object:
-  #   node = OpenStreetMap::Node.new(:id => "123", :lat => "52.2", :lon => "13.4", :changeset => "12", :user => "fred", :uid => "123", :visible => true, :timestamp => "2005-07-30T14:27:12+01:00")
+  # To create a new Rosemary::Node object:
+  #   node = Rosemary::Node.new(:id => "123", :lat => "52.2", :lon => "13.4", :changeset => "12", :user => "fred", :uid => "123", :visible => true, :timestamp => "2005-07-30T14:27:12+01:00")
   #
   # To get a node from the API:
-  #   node = OpenStreetMap::Node.find(17)
+  #   node = Rosemary::Node.find(17)
   #
   class Node < Element
     # Longitude in decimal degrees

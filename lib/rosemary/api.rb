@@ -1,5 +1,5 @@
 require 'httparty'
-module OpenStreetMap
+module Rosemary
   class Api
     include HTTParty
     include ChangesetCallbacks
@@ -27,7 +27,7 @@ module OpenStreetMap
 
     # Get a Node with specified ID from API.
     #
-    # call-seq: find_node(id) -> OpenStreetMap::Node
+    # call-seq: find_node(id) -> Rosemary::Node
     #
     def find_node(id)
       find_element('node', id)
@@ -35,7 +35,7 @@ module OpenStreetMap
 
     # Get a Way with specified ID from API.
     #
-    # call-seq: find_way(id) -> OpenStreetMap::Way
+    # call-seq: find_way(id) -> Rosemary::Way
     #
     def find_way(id)
       find_element('way', id)
@@ -43,7 +43,7 @@ module OpenStreetMap
 
     # Get a Relation with specified ID from API.
     #
-    # call-seq: find_relation(id) -> OpenStreetMap::Relation
+    # call-seq: find_relation(id) -> Rosemary::Relation
     #
     def find_relation(id)
       find_element('relation', id)
@@ -51,15 +51,15 @@ module OpenStreetMap
 
     # Get a Changeset with specified ID from API.
     #
-    # call-seq: find_changeset(id) -> OpenStreetMap::Changeset
+    # call-seq: find_changeset(id) -> Rosemary::Changeset
     #
     def find_changeset(id)
       find_element('changeset', id)
     end
 
-    # Get the user which represented by the OpenStreetMap::Client
+    # Get the user which represented by the Rosemary::Client
     #
-    # call-seq: find_user -> OpenStreetMap::User
+    # call-seq: find_user -> Rosemary::User
     #
     def find_user
       raise CredentialsMissing if client.nil?
@@ -117,7 +117,7 @@ module OpenStreetMap
 
     # Get an object ('node', 'way', or 'relation') with specified ID from API.
     #
-    # call-seq: find_element('node', id) -> OpenStreetMap::Element
+    # call-seq: find_element('node', id) -> Rosemary::Element
     #
     def find_element(type, id)
       raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation|changeset)$/

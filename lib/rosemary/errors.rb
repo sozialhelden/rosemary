@@ -1,4 +1,4 @@
-module OpenStreetMap
+module Rosemary
   # Unspecified OSM API error.
   class Error < StandardError
     attr_reader :data
@@ -9,10 +9,10 @@ module OpenStreetMap
     end
   end
 
-  # This error occurs when OpenStreetMap is instantiated without a client
+  # This error occurs when Rosemary is instantiated without a client
   class CredentialsMissing < StandardError; end
 
-  # This error occurs when OpenStreetMap has no changeset.
+  # This error occurs when Rosemary has no changeset.
   class ChangesetMissing < StandardError; end
 
   # An object was not found in the database.

@@ -1,5 +1,5 @@
 require 'builder'
-module OpenStreetMap
+module Rosemary
   class User
     # Unique ID
     attr_reader :id

@@ -1,6 +1,6 @@
 require 'httparty'
 require 'xml/libxml'
-class OpenStreetMap::Parser < HTTParty::Parser
+class Rosemary::Parser < HTTParty::Parser
   include LibXML::XML::SaxParser::Callbacks
 
   attr_accessor :context, :description, :lang, :collection
@@ -59,7 +59,7 @@ class OpenStreetMap::Parser < HTTParty::Parser
   end
 
   def on_characters(chars)
-    if @context.class.name == 'OpenStreetMap::User'
+    if @context.class.name == 'Rosemary::User'
       if @description
         @context.description = chars
       end
@@ -72,19 +72,19 @@ class OpenStreetMap::Parser < HTTParty::Parser
   private
 
   def _start_node(attr_hash)
-    @context = OpenStreetMap::Node.new(attr_hash)
+    @context = Rosemary::Node.new(attr_hash)
   end
 
   def _start_way(attr_hash)
-    @context = OpenStreetMap::Way.new(attr_hash)
+    @context = Rosemary::Way.new(attr_hash)
   end
 
   def _start_relation(attr_hash)
-    @context = OpenStreetMap::Relation.new(attr_hash)
+    @context = Rosemary::Relation.new(attr_hash)
   end
 
   def _start_changeset(attr_hash)
-    @context = OpenStreetMap::Changeset.new(attr_hash)
+    @context = Rosemary::Changeset.new(attr_hash)
   end
 
   def _end_changeset
@@ -92,7 +92,7 @@ class OpenStreetMap::Parser < HTTParty::Parser
   end
 
   def _start_user(attr_hash)
-    @context = OpenStreetMap::User.new(attr_hash)
+    @context = Rosemary::User.new(attr_hash)
   end
 
   def _nd(attr_hash)
@@ -107,7 +107,7 @@ class OpenStreetMap::Parser < HTTParty::Parser
   end
 
   def _member(attr_hash)
-    new_member = OpenStreetMap::Member.new(attr_hash['type'], attr_hash['ref'], attr_hash['role'])
+    new_member = Rosemary::Member.new(attr_hash['type'], attr_hash['ref'], attr_hash['role'])
     if respond_to?(:member)
       return unless member(@context, new_member)
     end

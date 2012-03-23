@@ -1,11 +1,11 @@
-module OpenStreetMap
+module Rosemary
   # OpenStreetMap Relation.
   #
-  # To create a new OpenStreetMap::Relation object:
-  #   relation = OpenStreetMap::Relation.new()
+  # To create a new Rosemary::Relation object:
+  #   relation = Rosemary::Relation.new()
   #
   # To get a relation from the API:
-  #   relation = OpenStreetMap::Relation.find(17)
+  #   relation = Rosemary::Relation.find(17)
   #
   class Relation < Element
     # Array of Member objects
@@ -43,7 +43,7 @@ module OpenStreetMap
       return [] unless member_array && member_array.size > 0
 
       member_array.inject([]) do |memo, member|
-        class_to_instantize = "OpenStreetMap::#{member['type'].classify}".constantize
+        class_to_instantize = "Rosemary::#{member['type'].classify}".constantize
         memo << class_to_instantize.new(:id => member['ref'])
       end
     end

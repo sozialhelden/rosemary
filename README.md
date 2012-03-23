@@ -1,9 +1,9 @@
-# OpenStreetMap for ruby
+# Rosemary: OpenStreetMap for Ruby
 
 [![alt text][2]][1]
 
-  [1]: http://travis-ci.org/#!/sozialhelden/openstreetmap
-  [2]: https://secure.travis-ci.org/sozialhelden/openstreetmap.png
+  [1]: http://travis-ci.org/#!/sozialhelden/rosemary
+  [2]: https://secure.travis-ci.org/sozialhelden/rosemary.png
 
 This ruby gem is an API client for the current OpenStreetMap [API v0.6](http://wiki.openstreetmap.org/wiki/API_v0.6). It provides easy access to OpenStreetMap (OSM) data.
 
@@ -26,7 +26,7 @@ Due to the license switch, data added in future must be compatible with both the
 Put this in your Gemfile
 
     # Gemfile
-    gem 'openstreetmap', :git => 'git://github.com/sozialhelden/openstreetmap'
+    gem 'rosemary', :git => 'git://github.com/sozialhelden/rosemary'
 
 Then run
 
@@ -36,16 +36,16 @@ Then run
 
 OK, gimme some code:
 
-    require 'openstreetmap'
-    api = OpenStreetMap::Api.new
+    require 'rosemary'
+    api = Rosemary::Api.new
     node = api.find_node(123)
-     => #<OpenStreetMap::Node:0x1019268d0 @changeset=7836598, @timestamp=Mon Apr 11 19:40:43 UTC 2011, @user="Turleder'n", @tags={}, @uid=289426, @version=4, @lat=59.9502252, @id=123, @lon=10.7899133>
+     => #<Rosemary::Node:0x1019268d0 @changeset=7836598, @timestamp=Mon Apr 11 19:40:43 UTC 2011, @user="Turleder'n", @tags={}, @uid=289426, @version=4, @lat=59.9502252, @id=123, @lon=10.7899133>
 
 Modification of data is supported too. According to the OSM license every modification to the data has to be done by a registered OSM user account. The user can be authenticated with username and password. But see yourself:
 
-    client = OpenStreetMap::BasicAuthClient.new('osm_user_name', 'password')
-    api = OpenStreetMap::Api.new(client)
-    node = OpenStreetMap::Node.new(:lat => 52.0, :lon => 13.4)
+    client = Rosemary::BasicAuthClient.new('osm_user_name', 'password')
+    api = Rosemary::Api.new(client)
+    node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
     api.save(node)
 
 Yeah, i can hear you sayin: 'Seriously, do i have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: [OAuth](http://oauth.net/) It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a save place.
@@ -57,9 +57,9 @@ Yeah, i can hear you sayin: 'Seriously, do i have to provide username and passwo
                                       :authorize_path => '/oauth/authorize'
                                     })
     access_token = OAuth::AccessToken.new(consumer, 'osm_user_token', 'osm_user_key')
-    client = OpenStreetMap::OauthClient.new(access_token)
-    api = OpenStreetMap::Api.new(client)
-    node = OpenStreetMap::Node.new(:lat => 52.0, :lon => 13.4)
+    client = Rosemary::OauthClient.new(access_token)
+    api = Rosemary::Api.new(client)
+    node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
     api.save(node)
 
 Every request to the API is now handled by the OauthClient.

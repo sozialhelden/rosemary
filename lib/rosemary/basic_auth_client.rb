@@ -1,4 +1,4 @@
-module OpenStreetMap
+module Rosemary
   class BasicAuthClient
 
     attr_reader :username, :password

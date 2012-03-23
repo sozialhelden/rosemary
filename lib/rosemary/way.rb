@@ -1,11 +1,11 @@
-module OpenStreetMap
+module Rosemary
   # OpenStreetMap Way.
   #
-  # To create a new OpenStreetMap::Way object:
-  #   way = OpenStreetMap::Way.new()
+  # To create a new Rosemary::Way object:
+  #   way = Rosemary::Way.new()
   #
   # To get a way from the API:
-  #   way = OpenStreetMap::Way.find_way(17)
+  #   way = Rosemary::Way.find_way(17)
   #
   class Way < Element
     # Array of node IDs in this way.
@@ -46,7 +46,7 @@ module OpenStreetMap
           stuff.each do |item|
             self << item
           end
-        when OpenStreetMap::Node
+        when Rosemary::Node
           nodes << stuff.id
         when String
           nodes << stuff.to_i

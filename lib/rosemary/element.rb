@@ -1,4 +1,4 @@
-module OpenStreetMap
+module Rosemary
   # This is a virtual parent class for the OSM objects Node, Way and Relation.
   class Element
     include ActiveModel::Validations
@@ -30,14 +30,14 @@ module OpenStreetMap
     # Tags for this object
     attr_reader :tags
 
-    # Get OpenStreetMap::Element from API
-    def self.from_api(id, api=OpenStreetMap::API.new) #:nodoc:
-        raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::Element
+    # Get Rosemary::Element from API
+    def self.from_api(id, api=Rosemary::API.new) #:nodoc:
+        raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == Rosemary::Element
         api.get_object(type, id)
     end
 
     def initialize(attrs = {}) #:nodoc:
-      raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == OpenStreetMap::Element
+      raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == Rosemary::Element
       attrs = {'version' => 1, 'uid' => 1}.merge(attrs.stringify_keys!)
       @id         = attrs['id'].to_i if attrs['id']
       @version    = attrs['version'].to_i
@@ -167,23 +167,23 @@ module OpenStreetMap
 
     # Get all relations from the API that have his object as members.
     #
-    # The optional parameter is an OpenStreetMap::API object. If none is specified
+    # The optional parameter is an Rosemary::API object. If none is specified
     # the default OSM API is used.
     #
     # Returns an array of Relation objects or an empty array.
     #
-    def get_relations_from_api(api=OpenStreetMap::API.new)
+    def get_relations_from_api(api=Rosemary::API.new)
       api.get_relations_referring_to_object(type, self.id.to_i)
     end
 
     # Get the history of this object from the API.
     #
-    # The optional parameter is an OpenStreetMap::API object. If none is specified
+    # The optional parameter is an Rosemary::API object. If none is specified
     # the default OSM API is used.
     #
-    # Returns an array of OpenStreetMap::Node, OpenStreetMap::Way, or OpenStreetMap::Relation objects
+    # Returns an array of Rosemary::Node, Rosemary::Way, or Rosemary::Relation objects
     # with all the versions.
-    def get_history_from_api(api=OpenStreetMap::API.new)
+    def get_history_from_api(api=Rosemary::API.new)
       api.get_history(type, self.id.to_i)
     end
 
@@ -191,7 +191,7 @@ module OpenStreetMap
     # instance obj.name is the same as obj.tags['name']. This works
     # for getting and setting tags.
     #
-    #   node = OpenStreetMap::Node.new
+    #   node = Rosemary::Node.new
     #   node.add_tags( 'highway' => 'residential', 'name' => 'Main Street' )
     #   node.highway                   #=> 'residential'
     #   node.highway = 'unclassified'  #=> 'unclassified'
