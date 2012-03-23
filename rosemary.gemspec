@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version = Rosemary::VERSION
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Christoph B\u{fc}nte, Enno Brehm"]
+  s.authors = ["Christoph Bünte, Enno Brehm"]
   s.date = "2012-03-22"
   s.description = "OpenStreetMap API client for ruby"
   s.email = ["info@christophbuente.de"]
