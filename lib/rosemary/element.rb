@@ -126,8 +126,6 @@ module Rosemary
           dirty = true
         end
       end
-
-      puts "returning #{dirty}"
       dirty
     end
 
