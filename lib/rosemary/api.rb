@@ -125,8 +125,6 @@ module Rosemary
       changesets.nil? ? [] : changesets
     end
 
-    private
-
     # Get an object ('node', 'way', or 'relation') with specified ID from API.
     #
     # call-seq: find_element('node', id) -> Rosemary::Element
@@ -137,6 +135,8 @@ module Rosemary
       response = get("/#{type}/#{id}")
       response.is_a?(Array ) ? response.first : response
     end
+
+    private
 
     # most GET requests are valid without authentication, so this is the standard
     def get(url, options = {})
