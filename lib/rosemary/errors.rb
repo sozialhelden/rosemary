@@ -25,6 +25,8 @@ module Rosemary
   # password for a write operation.
   class Unauthorized < Error; end # 401
 
+  class Forbidden < Error; end # 403
+
   # The object was not found (HTTP 404). Generally means that the object doesn't exist
   # and never has.
   class NotFound < Error; end # 404

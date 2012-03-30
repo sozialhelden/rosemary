@@ -208,17 +208,19 @@ module Rosemary
     def check_response_codes(response)
       body = response.body
       case response.code.to_i
-        when 200 then return
-        when 400 then raise BadRequest.new(body)
-        when 401 then raise Unauthorized.new(body)
-        when 404 then raise NotFound.new(body)
-        when 405 then raise MethodNotAllowed.new(body)
-        when 409 then raise Conflict.new(body)
-        when 410 then raise Gone.new(body)
-        when 412 then raise Precondition.new(body)
-        when 500 then raise ServerError
-        when 503 then raise Unavailable.new('Service Unavailable')
-        else raise Error
+      when 200 then return
+      when 400 then raise BadRequest.new(body)
+      when 401 then raise Unauthorized.new(body)
+      when 403 then raise Forbidden.new(body)
+      when 404 then raise NotFound.new(body)
+      when 405 then raise MethodNotAllowed.new(body)
+      when 409 then raise Conflict.new(body)
+      when 410 then raise Gone.new(body)
+      when 412 then raise Precondition.new(body)
+#      when 414 then raise UriTooLarge.new(body)
+      when 500 then raise ServerError
+      when 503 then raise Unavailable.new('Service Unavailable')
+      else raise Error("Unknown response code: #{response.code}")
       end
     end
 
