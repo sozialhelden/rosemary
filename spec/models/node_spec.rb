@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe Rosemary
+include Rosemary
 describe Node do
 
   subject do

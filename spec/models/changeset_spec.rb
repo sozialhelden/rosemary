@@ -97,7 +97,7 @@ describe Changeset do
     end
 
     it "should have a created_at attribute within xml representation" do
-      subject.should have_xml "//changeset[@created_at='2008-11-08 19:07:39 +0100']"
+      subject.should have_xml "//changeset[@created_at=\'#{Time.parse('2008-11-08T19:07:39+01:00')}\']"
     end
 
     it "should have a comment tag within xml representation" do
