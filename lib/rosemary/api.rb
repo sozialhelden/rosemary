@@ -12,7 +12,6 @@ module Rosemary
   #   api.save(@node)
   class Api
     include HTTParty
-    include ChangesetCallbacks
     API_VERSION = "0.6".freeze
 
     # the default base URI for the API
@@ -29,10 +28,6 @@ module Rosemary
 
     def initialize(client=nil)
       @client = client
-    end
-
-    def changeset!
-      @changeset ||= create_changeset
     end
 
     # Get a Node with specified ID from API.
@@ -67,6 +62,21 @@ module Rosemary
       find_element('changeset', id)
     end
 
+    # Get a Changeset with specified ID from API
+    # if that changeset is missing, id is nil, or the changeset is closed
+    # create a new one
+    #
+    # call-seq: find_or_create_open_changeset(id, comment) -> Rosemary::Changeset
+    #
+    def find_or_create_open_changeset(id, comment = nil)
+      find_open_changeset(id) || create_changeset(comment)
+    end
+
+    def find_open_changeset(id)
+      cs = find_changeset(id)
+      (cs && cs.open?) ? cs : nil
+    end
+
     # Get the user which represented by the Rosemary::Client
     #
     # call-seq: find_user -> Rosemary::User
@@ -79,8 +89,7 @@ module Rosemary
     end
 
     # Delete an element
-    def destroy(element)
-      raise ChangesetMissing unless changeset.open?
+    def destroy(element, changeset)
       element.changeset = changeset.id
       response = delete("/#{element.type.downcase}/#{element.id}", :body => element.to_xml) unless element.id.nil?
       response.to_i # New version number
@@ -88,34 +97,32 @@ module Rosemary
 
     # Saves an element to the API.
     # If it has no id yet, the element will be created, otherwise updated.
-    def save(element)
+    def save(element, changeset)
       response = if element.id.nil?
-        create(element)
+        create(element, changeset)
       else
-        update(element)
+        update(element, changeset)
       end
     end
 
-    def create(element)
-      raise ChangesetMissing unless changeset.open?
+    def create(element, changeset)
       element.changeset = changeset.id
       put("/#{element.type.downcase}/create", :body => element.to_xml)
     end
 
-    def update(element)
-      raise ChangesetMissing unless changeset.open?
+    def update(element, changeset)
       element.changeset = changeset.id
       response = put("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
       response.to_i # New Version number
     end
 
-    def create_changeset
-      changeset = Changeset.new
+    def create_changeset(comment = nil)
+      changeset = Changeset.new(:tags => { :comment => comment })
       changeset_id = put("/changeset/create", :body => changeset.to_xml).to_i
       find_changeset(changeset_id) unless changeset_id == 0
     end
 
-    def close_changeset
+    def close_changeset(changeset)
       put("/changeset/#{changeset.id}/close")
     end
 
@@ -131,9 +138,13 @@ module Rosemary
     #
     def find_element(type, id)
       raise ArgumentError.new("type needs to be one of 'node', 'way', and 'relation'") unless type =~ /^(node|way|relation|changeset)$/
-      raise TypeError.new('id needs to be a positive integer') unless(id.kind_of?(Fixnum) && id > 0)
-      response = get("/#{type}/#{id}")
-      response.is_a?(Array ) ? response.first : response
+      return nil if id.nil?
+      begin
+        response = get("/#{type}/#{id}")
+        response.is_a?(Array ) ? response.first : response
+      rescue NotFound
+        nil
+      end
     end
 
     private
@@ -197,14 +208,6 @@ module Rosemary
       end
     end
 
-    def find_open_changeset
-      find_changesets_for_user(:open => true).first
-    end
-
-    def find_or_create_open_changeset(options = {})
-      @changeset = (find_open_changeset || create_changeset)
-    end
-
     def check_response_codes(response)
       body = response.body
       case response.code.to_i
@@ -220,7 +223,7 @@ module Rosemary
 #      when 414 then raise UriTooLarge.new(body)
       when 500 then raise ServerError
       when 503 then raise Unavailable.new('Service Unavailable')
-      else raise Error("Unknown response code: #{response.code}")
+      else raise "Unknown response code: #{response.code}"
       end
     end
 

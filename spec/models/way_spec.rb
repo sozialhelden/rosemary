@@ -1,6 +1,6 @@
 require 'spec_helper'
-
-describe 'Rosemary::Way' do
+include Rosemary
+describe Way do
 
   def valid_fake_way
     way=<<-EOF
@@ -24,7 +24,7 @@ describe 'Rosemary::Way' do
   end
 
   subject do
-    @way ||= Rosemary::Way.from_xml(valid_fake_way)
+    @way ||= Way.from_xml(valid_fake_way)
   end
 
   it "should have 4 nodes" do

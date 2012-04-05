@@ -1,20 +1,20 @@
 require 'spec_helper'
-
-describe Rosemary::Node do
+include Rosemary
+describe Node do
 
   before do
     WebMock.disable_net_connect!
   end
 
-  let :osm do
-    Rosemary::Api.new
-  end
+  let(:changeset) { Changeset.new(:id => 1) }
 
-  let :stub_changeset_lookup do
+  let(:osm) { Api.new }
+
+  def stub_changeset_lookup
     stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
   end
 
-  let :stub_node_lookup do
+  def stub_node_lookup
     stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
   end
 
@@ -60,11 +60,11 @@ describe Rosemary::Node do
 
   describe '#find:' do
 
-    let :request_url do
+    def request_url
       "http://www.openstreetmap.org/api/0.6/node/1234"
     end
 
-    let :stubbed_request do
+    def stubbed_request
       stub_request(:get, request_url)
     end
 
@@ -72,7 +72,7 @@ describe Rosemary::Node do
       stubbed_request.to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
       node = osm.find_node 1234
       assert_requested :get, request_url, :times => 1
-      node.class.should eql Rosemary::Node
+      node.class.should eql Node
       node.tags.size.should eql 3
       node.tags['name'].should eql 'The rose'
       node['name'].should eql 'The rose'
@@ -84,84 +84,95 @@ describe Rosemary::Node do
       stubbed_request.to_timeout
       lambda {
         node = osm.find_node(1234)
-      }.should raise_error(Rosemary::Unavailable)
+      }.should raise_error(Unavailable)
     end
 
     it "should raise an Gone error, when a node has been deleted" do
       stubbed_request.to_return(:status => 410, :body => '', :headers => {'Content-Type' => 'text/plain'})
       lambda {
         node = osm.find_node(1234)
-      }.should raise_error(Rosemary::Gone)
+      }.should raise_error(Gone)
     end
 
     it "should raise an NotFound error, when a node cannot be found" do
       stubbed_request.to_return(:status => 404, :body => '', :headers => {'Content-Type' => 'text/plain'})
-      lambda {
-        node = osm.find_node(1234)
-      }.should raise_error(Rosemary::NotFound)
+      node = osm.find_node(1234)
+      node.should be_nil
     end
   end
 
   describe 'with BasicAuthClient' do
 
     let :osm do
-      Rosemary::Api.new(Rosemary::BasicAuthClient.new('a_username', 'a_password'))
+      Api.new(BasicAuthClient.new('a_username', 'a_password'))
     end
 
-    let :stub_user_lookup do
+    def stub_user_lookup
       stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
     end
 
     describe '#create:' do
 
-      let (:node) { Rosemary::Node.new }
-      let (:request_url)     { "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create" }
-      let (:stubbed_request) { stub_request(:put, request_url) }
+      let (:node) { Node.new }
+
+      let (:expected_body) {
+        expected_node = node.dup
+        expected_node.changeset = changeset.id
+        expected_node.to_xml
+      }
+
+      def request_url
+        "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create"
+      end
+
+      def stubbed_request
+        stub_request(:put, request_url)
+      end
 
       before do
-        stub_changeset_lookup
         stub_user_lookup
       end
 
       it "should create a new Node from given attributes" do
-        stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
-        node.id.should be_nil
-        new_id = osm.save(node)
+        stubbed_request.with(:body => expected_body).
+          to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
+
+        new_id = osm.create(node, changeset)
       end
 
       it "should raise a Unavailable, when api times out" do
         stubbed_request.to_timeout
         lambda {
-          new_id = osm.save(node)
-        }.should raise_error(Rosemary::Unavailable)
+          new_id = osm.create(node, changeset)
+        }.should raise_error(Unavailable)
       end
 
       it "should not create a Node with invalid xml but raise BadRequest" do
         stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          new_id = osm.save(node)
-        }.should raise_error(Rosemary::BadRequest)
+          new_id = osm.save(node, changeset)
+        }.should raise_error(BadRequest)
       end
 
       it "should not allow to create a node when a changeset has been closed" do
         stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          new_id = osm.save(node)
-        }.should raise_error(Rosemary::Conflict)
+          new_id = osm.save(node, changeset)
+        }.should raise_error(Conflict)
       end
 
       it "should not allow to create a node when no authentication client is given" do
-        osm = Rosemary::Api.new
+        osm = Api.new
         lambda {
-          osm.save(node)
-        }.should raise_error(Rosemary::CredentialsMissing)
+          osm.save(node, changeset)
+        }.should raise_error(CredentialsMissing)
       end
 
       it "should set a changeset" do
         stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
-        osm.save(node)
-        node.changeset.should == osm.changeset.id
+        osm.save(node, changeset)
+        node.changeset.should == changeset.id
       end
     end
 
@@ -172,7 +183,6 @@ describe Rosemary::Node do
       end
 
       before do
-        stub_changeset_lookup
         stub_user_lookup
         stub_node_lookup
       end
@@ -182,15 +192,15 @@ describe Rosemary::Node do
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
         node.should_receive(:changeset=)
-        new_version = osm.save(node)
+        new_version = osm.save(node, changeset)
         new_version.should eql 43
       end
 
       it "should set a changeset" do
         stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
-        osm.save(node)
-        node.changeset.should == osm.changeset.id
+        osm.save(node, changeset)
+        node.changeset.should == changeset.id
       end
 
 
@@ -209,62 +219,62 @@ describe Rosemary::Node do
       end
 
       it "should not delete an node with missing id" do
-        node = Rosemary::Node.new
-        osm.destroy(node)
+        node = Node.new
+        osm.destroy(node, changeset)
       end
 
       it "should delete an existing node" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.should_receive(:changeset=)
-        new_version = osm.destroy(node)
+        new_version = osm.destroy(node, changeset)
         new_version.should eql 43 # new version number
       end
 
       it "should raise an error if node to be deleted is still part of a way" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          response = osm.destroy(node)
+          response = osm.destroy(node, changeset)
           response.should eql "Version does not match current database version"
-        }.should raise_error Rosemary::BadRequest
+        }.should raise_error BadRequest
       end
 
       it "should raise an error if node cannot be found" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 404, :body => 'Node cannot be found', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          response = osm.destroy(node)
+          response = osm.destroy(node, changeset)
           response.should eql "Node cannot be found"
-        }.should raise_error Rosemary::NotFound
+        }.should raise_error NotFound
       end
 
       it "should raise an error if there is a conflict" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 409, :body => 'Node has been deleted in this changeset', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          response = osm.destroy(node)
+          response = osm.destroy(node, changeset)
           response.should eql "Node has been deleted in this changeset"
-        }.should raise_error Rosemary::Conflict
+        }.should raise_error Conflict
       end
 
       it "should raise an error if the node is already delted" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 410, :body => 'Node has been deleted', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          response = osm.destroy(node)
+          response = osm.destroy(node, changeset)
           response.should eql "Node has been deleted"
-        }.should raise_error Rosemary::Gone
+        }.should raise_error Gone
       end
 
       it "should raise an error if the node is part of a way" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 412, :body => 'Node 123 is still used by way 456', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          response = osm.destroy(node)
+          response = osm.destroy(node, changeset)
           response.should eql "Node 123 is still used by way 456"
-        }.should raise_error Rosemary::Precondition
+        }.should raise_error Precondition
       end
 
       it "should set the changeset an existing node" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
-        new_version = osm.destroy(node)
-        node.changeset.should == osm.changeset.id
+        new_version = osm.destroy(node, changeset)
+        node.changeset.should == changeset.id
       end
     end
   end
@@ -287,23 +297,23 @@ describe Rosemary::Node do
     end
 
     let :osm do
-      Rosemary::Api.new(Rosemary::OauthClient.new(access_token))
+      Api.new(OauthClient.new(access_token))
     end
 
-    let :stub_user_lookup do
+    def stub_user_lookup
       stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
     end
 
     describe '#create:' do
       let :node do
-        Rosemary::Node.new
+        Node.new
       end
 
-      let :request_url do
+      def request_url
         "http://www.openstreetmap.org/api/0.6/node/create"
       end
 
-      let :stubbed_request do
+      def stubbed_request
         stub_request(:put, request_url)
       end
 
@@ -315,36 +325,36 @@ describe Rosemary::Node do
       it "should create a new Node from given attributes" do
         stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
         node.id.should be_nil
-        new_id = osm.save(node)
+        new_id = osm.save(node, changeset)
       end
 
       it "should raise a Unavailable, when api times out" do
         stubbed_request.to_timeout
         lambda {
-          new_id = osm.save(node)
-        }.should raise_error(Rosemary::Unavailable)
+          new_id = osm.save(node, changeset)
+        }.should raise_error(Unavailable)
       end
 
 
       it "should not create a Node with invalid xml but raise BadRequest" do
         stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          new_id = osm.save(node)
-        }.should raise_error(Rosemary::BadRequest)
+          new_id = osm.save(node, changeset)
+        }.should raise_error(BadRequest)
       end
 
       it "should not allow to create a node when a changeset has been closed" do
         stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
         lambda {
-          new_id = osm.save(node)
-        }.should raise_error(Rosemary::Conflict)
+          new_id = osm.save(node, changeset)
+        }.should raise_error(Conflict)
       end
 
       it "should not allow to create a node when no authentication client is given" do
-        osm = Rosemary::Api.new
+        osm = Api.new
         lambda {
-          osm.save(node)
-        }.should raise_error(Rosemary::CredentialsMissing)
+          osm.save(node, changeset)
+        }.should raise_error(CredentialsMissing)
       end
 
     end
@@ -366,7 +376,7 @@ describe Rosemary::Node do
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
         node.should_receive(:changeset=)
-        new_version = osm.save(node)
+        new_version = osm.save(node, changeset)
         new_version.should eql 43
       end
     end
@@ -388,8 +398,8 @@ describe Rosemary::Node do
         node.should_receive(:changeset=)
         lambda {
           # Delete is not implemented using oauth
-          new_version = osm.destroy(node)
-        }.should raise_error(Rosemary::NotImplemented)
+          new_version = osm.destroy(node, changeset)
+        }.should raise_error(NotImplemented)
       end
     end
   end

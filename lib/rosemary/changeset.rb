@@ -30,19 +30,20 @@ module Rosemary
     attr_reader :tags
 
     def initialize(attrs = {}) #:nodoc:
-      attrs.stringify_keys!
-      @id         = attrs['id'].to_i if attrs['id']
-      @uid        = attrs['uid'].to_i
-      @user       = attrs['user']
-      @created_at = Time.parse(attrs['created_at']) rescue nil
-      @closed_at  = Time.parse(attrs['closed_at']) rescue nil
-      @open       = attrs['open']
-      @tags       = Tags.new
-      @tags[:created_by] = 'osm for ruby'
-      @min_lat    = attrs['min_lat'].to_f
-      @min_lon    = attrs['min_lon'].to_f
-      @max_lat    = attrs['max_lat'].to_f
-      @max_lon    = attrs['max_lon'].to_f
+      attrs = attrs.dup.stringify_keys!
+      @id                 = attrs['id'].to_i if attrs['id']
+      @uid                = attrs['uid'].to_i
+      @user               = attrs['user']
+      @created_at         = Time.parse(attrs['created_at']) rescue nil
+      @closed_at          = Time.parse(attrs['closed_at']) rescue nil
+      @open               = attrs['open']
+      tags = attrs['tags'] || {}
+      @tags               = Tags.new.merge(tags.dup.stringify_keys!)
+      @tags['created_by'] = 'osm for ruby'
+      @min_lat            = attrs['min_lat'].to_f
+      @min_lon            = attrs['min_lon'].to_f
+      @max_lat            = attrs['max_lat'].to_f
+      @max_lon            = attrs['max_lon'].to_f
 
     end
 

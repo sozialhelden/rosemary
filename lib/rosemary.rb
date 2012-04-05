@@ -2,7 +2,6 @@ require "rosemary/version"
 
 require 'hash'
 require 'active_model'
-require 'changeset_callbacks'
 require 'rosemary/tags'
 require 'rosemary/element'
 require 'rosemary/node'

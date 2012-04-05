@@ -1,13 +1,13 @@
 require 'spec_helper'
-
-describe Rosemary::Way do
+include Rosemary
+describe Way do
 
   before do
     WebMock.disable_net_connect!
   end
 
   let :osm do
-    Rosemary::Api.new
+    Api.new
   end
 
   def valid_fake_way
@@ -36,7 +36,7 @@ describe Rosemary::Way do
     it "should build a Way from API response via get_way" do
       stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
       way = osm.find_way(1234)
-      way.class.should eql Rosemary::Way
+      way.class.should eql Way
       way.nodes.should include(15735246)
     end
   end

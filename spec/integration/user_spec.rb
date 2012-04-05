@@ -1,6 +1,6 @@
 require 'spec_helper'
-
-describe Rosemary::User do
+include Rosemary
+describe User do
 
   before do
     WebMock.disable_net_connect!
@@ -22,7 +22,7 @@ describe Rosemary::User do
   end
 
   let :osm do
-    Rosemary::Api.new(Rosemary::OauthClient.new(access_token))
+    Api.new(OauthClient.new(access_token))
   end
 
   def valid_fake_user
@@ -47,14 +47,14 @@ describe Rosemary::User do
     it "should build a User from API response via find_user" do
       stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'})
       user = osm.find_user
-      user.class.should eql Rosemary::User
+      user.class.should eql User
     end
 
     it "should raise error from api" do
       stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 403, :body => "OAuth token doesn't have that capability.", :headers => {'Content-Type' => 'plain/text'})
       lambda {
         osm.find_user
-      }.should raise_error Rosemary::Forbidden
+      }.should raise_error Forbidden
     end
   end
 end

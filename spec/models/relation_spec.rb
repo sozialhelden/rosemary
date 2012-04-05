@@ -1,9 +1,9 @@
 require 'spec_helper'
-
-describe 'Rosemary::Relation' do
+include Rosemary
+describe Relation do
 
   subject do
-    Rosemary::Relation.new(:id         => "123",
+    Relation.new(:id         => "123",
                                 :lat        => "52.2",
                                 :lon        => "13.4",
                                 :changeset  => "12",

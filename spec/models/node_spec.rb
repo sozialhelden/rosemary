@@ -1,9 +1,9 @@
 require 'spec_helper'
-
-describe 'Rosemary::Node' do
+describe Rosemary
+describe Node do
 
   subject do
-    Rosemary::Node.new(:id         => "123",
+    Node.new(:id         => "123",
                             :lat        => "52.2",
                             :lon        => "13.4",
                             :changeset  => "12",
