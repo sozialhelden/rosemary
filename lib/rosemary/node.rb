@@ -22,7 +22,7 @@ module Rosemary
     #
     # If +id+ is +nil+ a new unique negative ID will be allocated.
     def initialize(attrs = {})
-      attrs.stringify_keys!
+      attrs = attrs.dup.stringify_keys!
       @lon = attrs['lon'].to_f rescue nil
       @lat = attrs['lat'].to_f rescue nil
       super(attrs)

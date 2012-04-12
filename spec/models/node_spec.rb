@@ -1,5 +1,6 @@
 require 'spec_helper'
 include Rosemary
+
 describe Node do
 
   subject do
@@ -19,6 +20,11 @@ describe Node do
     subject.lat = nil
     subject.lon = nil
     subject.should_not be_valid
+  end
+
+  it "does not modify the hash passed into constructor" do
+    h = { :lat => 13.9, :lon => 54.1 }.freeze
+    lambda { Node.new(h) }.should_not raise_error
   end
 
   it "should not be valid when using to large lat value" do
