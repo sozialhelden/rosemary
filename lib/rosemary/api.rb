@@ -221,7 +221,7 @@ module Rosemary
       when 410 then raise Gone.new(body)
       when 412 then raise Precondition.new(body)
 #      when 414 then raise UriTooLarge.new(body)
-      when 500 then raise ServerError
+      when 500 then raise ServerError.new(body)
       when 503 then raise Unavailable.new('Service Unavailable')
       else raise "Unknown response code: #{response.code}"
       end
