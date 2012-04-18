@@ -1,5 +1,6 @@
 require 'httparty'
 require 'xml/libxml'
+
 class Rosemary::Parser < HTTParty::Parser
   include LibXML::XML::SaxParser::Callbacks
 
@@ -15,7 +16,13 @@ class Rosemary::Parser < HTTParty::Parser
   end
 
   def xml
-    @parser = LibXML::XML::SaxParser.string(body)
+    # instead of using
+    # LibXML::XML::default_substitute_entities = true
+    # we change the options of the xml context:
+    ctx = XML::Parser::Context.string(body)
+    ctx.options = XML::Parser::Options::NOENT
+    @parser = LibXML::XML::SaxParser.new(ctx)
+
     @parser.callbacks = self
     @parser.parse
     @collection.empty? ? @context : @collection
