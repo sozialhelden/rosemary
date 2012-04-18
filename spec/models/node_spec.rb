@@ -95,4 +95,9 @@ describe Node do
     subject.add_tags(:wheelchair => '')
     subject.to_xml.should_not match /k=\"wheelchair\"/
   end
+
+  it "should properly escape ampersands" do
+    subject.name = "foo & bar"
+    subject.to_xml.should match "foo &amp; bar"
+  end
 end
