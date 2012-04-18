@@ -44,23 +44,25 @@ OK, gimme some code:
 Modification of data is supported too. According to the OSM license every modification to the data has to be done by a registered OSM user account. The user can be authenticated with username and password. But see yourself:
 
     client = Rosemary::BasicAuthClient.new('osm_user_name', 'password')
+
     api = Rosemary::Api.new(client)
+    changeset = api.create_changeset("Some meaningful comment")
     node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
-    api.save(node)
+    api.save(node, changeset)
+    api.close_changeset(changeset)
 
 Yeah, i can hear you sayin: 'Seriously, do i have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: [OAuth](http://oauth.net/) It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a save place.
 
     consumer = OAuth::Consumer.new( 'osm_app_key', 'osm_app_secret',
-                                    { :site => 'http://www.openstreetmap.org',
-                                      :request_token_path => '/oauth/request_token',
-                                      :access_token_path => '/oauth/access_token',
-                                      :authorize_path => '/oauth/authorize'
-                                    })
+                                    :site => 'http://www.openstreetmap.org')
     access_token = OAuth::AccessToken.new(consumer, 'osm_user_token', 'osm_user_key')
     client = Rosemary::OauthClient.new(access_token)
+
     api = Rosemary::Api.new(client)
+    changeset = api.create_changeset("Some meaningful comment")
     node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
-    api.save(node)
+    api.save(node, changeset)
+    api.close_changeset(changeset)
 
 Every request to the API is now handled by the OauthClient.
 
