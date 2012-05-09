@@ -20,5 +20,36 @@ describe Parser do
 
 
     end
+
+    it "parses empty set of permissions" do
+      permissions_xml =<<-EOF
+      <osm version="0.6" generator="OpenStreetMap Server">
+        <permissions>
+        </permissions>
+      </osm>
+      EOF
+
+      permissions = Parser.call(permissions_xml, :xml)
+      permissions.raw.should be_empty
+    end
+
+    it "parses permissions" do
+      permissions_xml =<<-EOF
+      <osm version="0.6" generator="OpenStreetMap Server">
+        <permissions>
+        <permission name="allow_read_prefs" />
+        <permission name="allow_write_api" />
+        </permissions>
+      </osm>
+      EOF
+
+      permissions = Parser.call(permissions_xml, :xml)
+      permissions.raw.sort.should == %w(allow_read_prefs allow_write_api)
+
+      permissions.allow_write_api?.should be_true
+      permissions.allow_read_prefs?.should be_true
+      permissions.allow_write_prefs?.should be_false
+    end
   end
+
 end

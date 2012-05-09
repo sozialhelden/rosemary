@@ -88,6 +88,14 @@ module Rosemary
       resp
     end
 
+    def permissions
+      if client.nil?
+        get("/permissions")
+      else
+        do_authenticated_request(:get, "/permissions")
+      end
+    end
+
     # Delete an element
     def destroy(element, changeset)
       element.changeset = changeset.id

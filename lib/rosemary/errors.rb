@@ -9,6 +9,8 @@ module Rosemary
     end
   end
 
+  class ParseError < StandardError; end
+
   # This error occurs when Rosemary is instantiated without a client
   class CredentialsMissing < StandardError; end
 

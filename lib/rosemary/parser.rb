@@ -53,6 +53,8 @@ class Rosemary::Parser < HTTParty::Parser
     when 'member'       then _member(attr_hash)
     when 'home'         then _home(attr_hash)
     when 'description'  then @description = true
+    when 'permissions'   then _start_permissions(attr_hash)
+    when 'permission'   then _start_permission(attr_hash)
     when 'lang'         then @lang        = true
     end
   end
@@ -77,7 +79,6 @@ class Rosemary::Parser < HTTParty::Parser
   end
 
   private
-
   def _start_node(attr_hash)
     @context = Rosemary::Node.new(attr_hash)
   end
@@ -92,6 +93,16 @@ class Rosemary::Parser < HTTParty::Parser
 
   def _start_changeset(attr_hash)
     @context = Rosemary::Changeset.new(attr_hash)
+  end
+
+  def _start_permissions(_)
+    # just a few sanity checks: we can only parse permissions as a top level elem
+    raise ParseError, "Unexpected <permissions> element" unless @context.nil?
+    @context = Rosemary::Permissions.new
+  end
+
+  def _start_permission(attr_hash)
+    @context << attr_hash['name']
   end
 
   def _end_changeset
