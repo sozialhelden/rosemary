@@ -39,7 +39,7 @@ module Rosemary
       @open               = attrs['open']
       tags = attrs['tags'] || {}
       @tags               = Tags.new.merge(tags.dup.stringify_keys!)
-      @tags['created_by'] = 'osm for ruby'
+      @tags['created_by'] = "rosemary v#{Rosemary::VERSION}"
       @min_lat            = attrs['min_lat'].to_f
       @min_lon            = attrs['min_lon'].to_f
       @max_lat            = attrs['max_lat'].to_f
