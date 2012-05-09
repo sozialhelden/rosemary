@@ -228,6 +228,10 @@ module Rosemary
       @tags = from.tags.dup
     end
 
+    def self.from_xml(xml)
+      Parser.call(xml, :xml)
+    end
+
     private
 
     # Return next free ID
