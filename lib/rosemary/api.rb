@@ -242,7 +242,7 @@ module Rosemary
                      content_type = Parser.format_from_mimetype(result.content_type)
                      parsed_response = Parser.call(result.body, content_type)
 
-                     HTTParty::Response.new(nil, result, parsed_response)
+                     HTTParty::Response.new(nil, result, lambda { parsed_response })
                    else
                      raise CredentialsMissing
                    end
