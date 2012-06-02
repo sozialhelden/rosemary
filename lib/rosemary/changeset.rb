@@ -3,30 +3,33 @@ module Rosemary
   # Changeset is used in OpenStreetMap to bundle several changes into a kind of "commit"
   class Changeset
     # Unique ID
+    # @return [Fixnum]
     attr_reader :id
 
-    # The user who last edited this object (as read from file, it
-    # is not updated by operations to this object)
+    # The user who last edited this object (as read from file, it is not updated by operations to this object)
+    # @return [Rosemary::User] the user who last edited this object
     attr_accessor :user
 
-    # The user id of the user who last edited this object (as read from file, it
-    # is not updated by operations to this object)
-    # API 0.6 and above only
+    # The user id of the user who last edited this object(as read from file, it
+    # is not updated by operations to this object) API 0.6 and above only
+    # @return [Fixnum] the user id of the user who last edited this object
     attr_accessor :uid
 
-    # True if this changeset is still open.
+    # @return [Boolean] is this changeset is still open.
     attr_accessor :open
 
-    # Creation date of this changeset
+    # @return [Date] creation date of this changeset
     attr_accessor :created_at
 
-    # When the changeset was closed
+    # @return [Date] when the changeset was closed
     attr_accessor :closed_at
 
     # Bounding box surrounding all changes made in this changeset
+    # @return [Float]
     attr_accessor :min_lat, :min_lon, :max_lat, :max_lon
 
     # Tags for this object
+    # @return [Hash]
     attr_reader :tags
 
     def initialize(attrs = {}) #:nodoc:
@@ -58,17 +61,17 @@ module Rosemary
     end
 
     # List of attributes for a Changeset
+    # @return [Array]
     def attribute_list
       [:id, :user, :uid, :open, :created_at, :closed_at, :min_lat, :max_lat, :min_lon, :max_lon]
     end
 
-    # Returns a hash of all non-nil attributes of this object.
-    #
+    # A hash of all non-nil attributes of this object.
     # Keys of this hash are <tt>:id</tt>, <tt>:user</tt>,
     # and <tt>:timestamp</tt>. For a Node also <tt>:lon</tt>
     # and <tt>:lat</tt>.
     #
-    # call-seq: attributes -> Hash
+    # @return [Hash] a hash of all non-nil attributes of this object.
     #
     def attributes
       attrs = Hash.new
@@ -79,6 +82,8 @@ module Rosemary
       attrs
     end
 
+    # Renders the object as an xml representation compatible to the OSM API
+    # @return [String] XML
     def to_xml(options = {})
       xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]

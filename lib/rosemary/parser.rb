@@ -1,6 +1,7 @@
 require 'httparty'
 require 'xml/libxml'
 
+# The XML parser capable of understanding the custom OSM XML format.
 class Rosemary::Parser < HTTParty::Parser
   include LibXML::XML::SaxParser::Callbacks
 

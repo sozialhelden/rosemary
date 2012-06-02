@@ -16,7 +16,7 @@ module Rosemary
 
     # Return string with comma separated key=value pairs.
     #
-    # call-seq: to_s -> String
+    # @return [String] string representation
     #
     def to_s
       sort.collect{ |k, v| "#{k}=#{v}" }.join(', ')

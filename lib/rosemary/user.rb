@@ -1,5 +1,6 @@
 require 'builder'
 module Rosemary
+  # The user object representing a registered OSM user.
   class User
     # Unique ID
     attr_reader :id

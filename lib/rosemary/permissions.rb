@@ -1,3 +1,4 @@
+# The permissions granted to the API user.
 class Rosemary::Permissions
   include Enumerable
 

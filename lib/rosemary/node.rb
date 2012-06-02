@@ -28,6 +28,7 @@ module Rosemary
       super(attrs)
     end
 
+
     def type
       'Node'
     end

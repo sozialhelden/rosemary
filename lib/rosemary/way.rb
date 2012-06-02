@@ -9,6 +9,7 @@ module Rosemary
   #
   class Way < Element
     # Array of node IDs in this way.
+    # @return [Array]
     attr_reader :nodes
 
     # Create new Way object.
@@ -38,7 +39,7 @@ module Rosemary
     #
     # Returns the way to allow chaining.
     #
-    # call-seq: way << something -> Way
+    # @return [Rosemary::Way] the way itself
     #
     def <<(stuff)
       case stuff
@@ -64,6 +65,9 @@ module Rosemary
       [:id, :version, :uid, :user, :timestamp, :changeset]
     end
 
+    # Instantiate a way from an XML representation.
+    # @param [String] xml_string the xml representing a way.
+    # @return [Rosemary::Way] the way represented by the given XML string.
     def self.from_xml(xml_string)
       Parser.call(xml_string, :xml)
     end

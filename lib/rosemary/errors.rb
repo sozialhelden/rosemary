@@ -9,6 +9,7 @@ module Rosemary
     end
   end
 
+  # This error occurs when the request send to the server could not be parsed.
   class ParseError < StandardError; end
 
   # This error occurs when Rosemary is instantiated without a client
@@ -24,6 +25,7 @@ module Rosemary
   # password for a write operation.
   class Unauthorized < Error; end # 401
 
+  # You don't have sufficient permissions to make that request.
   class Forbidden < Error; end # 403
 
   # The object was not found (HTTP 404). Generally means that the object doesn't exist
@@ -49,8 +51,10 @@ module Rosemary
   # Unspecified API server error.
   class ServerError < Error; end # 500
 
+  # When the API service times out or returns an HTTP 503 status.
   class Unavailable < Error; end # 503
 
-  class NotImplemented < Error; end # This method is not implemented yet.
+  # This method is not implemented yet.
+  class NotImplemented < Error; end
 
 end

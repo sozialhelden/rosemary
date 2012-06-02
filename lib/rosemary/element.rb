@@ -4,15 +4,18 @@ module Rosemary
     include ActiveModel::Validations
 
     # Unique ID
+    # @return [Fixnum] id of this element
     attr_reader :id
 
     # The version of this object (as read from file, it
     # is not updated by operations to this object)
     # API 0.6 and above only
+    # @return [Fixnum] the current version
     attr_accessor :version
 
-    # The user who last edited this object (as read from file, it
+    # The user who last edited this element (as read from file, it
     # is not updated by operations to this object)
+    # @return [Rosemary::User] the user who last edititd this element
     attr_accessor :user
 
     # The user id of the user who last edited this object (as read from file, it
@@ -22,6 +25,7 @@ module Rosemary
 
     # Last change of this object (as read from file, it is not
     # updated by operations to this object)
+    # @return [Time] last change of this object.
     attr_reader :timestamp
 
     # The changeset the last change of this object was made with.
@@ -31,6 +35,8 @@ module Rosemary
     attr_reader :tags
 
     # Get Rosemary::Element from API
+    # @param [Fixnum] id the id of the element to load from the API
+
     def self.from_api(id, api=Rosemary::API.new) #:nodoc:
         raise NotImplementedError.new('Element is a virtual base class for the Node, Way, and Relation classes') if self.class == Rosemary::Element
         api.get_object(type, id)
@@ -56,6 +62,7 @@ module Rosemary
     end
 
     # Set timestamp for this object.
+    # @param [Time] timestamp the time this object was created
     def timestamp=(timestamp)
       @timestamp = _check_timestamp(timestamp)
     end
@@ -132,7 +139,7 @@ module Rosemary
 
     # Has this object any tags?
     #
-    # call-seq: is_tagged?
+    # @return [Boolean] has any tags?
     #
     def is_tagged?
       ! @tags.empty?

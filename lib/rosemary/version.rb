@@ -1,3 +1,4 @@
 module Rosemary
-  VERSION = "0.3.4"
+  # The current version of this gem.
+  VERSION = "0.3.5"
 end

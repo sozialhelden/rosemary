@@ -1,5 +1,7 @@
+# Standard ruby hash class extended with some additional behaviour.
 class Hash
 
+  # symbolize_keys
   define_method(:symbolize_keys!) do
     self.each do |k,v|
       self[k.to_sym] = v
@@ -7,6 +9,7 @@ class Hash
     end
   end unless method_defined? :symbolize_keys!
 
+  # stringify_keys
   define_method(:stringify_keys!) do
     temp_hash = {}
     self.each do |k,v|

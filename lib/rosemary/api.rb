@@ -9,38 +9,51 @@ module Rosemary
   #   api = Rosemary::Api.new(auth_client)
   #   @node = api.find_node(1234)
   #   @node.tags << {:wheelchair => 'no'}
-  #   api.save(@node)
+  #   @changeset = api.create_changeset('Set the wheelchair tag')
+  #   api.save(@node, @changeset)
   class Api
+    # Provide basic HTTP client behaviour.
     include HTTParty
+
+    # The OSM API version supported by this gem.
     API_VERSION = "0.6".freeze
 
     # the default base URI for the API
     base_uri "http://www.openstreetmap.org"
     #base_uri "http://api06.dev.openstreetmap.org/api/#{API_VERSION}"
 
+    # Make sure the request don't run forever
     default_timeout 5
 
+    # Use a custom parser to handle the OSM XML format.
     parser Parser
 
+
+    # @return [Rosemary::Client] the client to be used to authenticate the user towards the OSM API.
     attr_accessor :client
 
+    # @return [Rosemary::Changeset] the current changeset to be used for all writing acces.
     attr_accessor :changeset
 
+    # Creates an Rosemary::Api object with an optional client
+    # @param [Rosemary::Client] client the client to authenticate the user for write access.
     def initialize(client=nil)
       @client = client
     end
 
     # Get a Node with specified ID from API.
     #
-    # call-seq: find_node(id) -> Rosemary::Node
-    #
+    # @param [Fixnum] id the id of the node to find.
+    # @return [Rosemary::Node] the node with the given id.
+    # @raise [Rosemary::Gone] in case the node has been deleted.
     def find_node(id)
       find_element('node', id)
     end
 
     # Get a Way with specified ID from API.
     #
-    # call-seq: find_way(id) -> Rosemary::Way
+    # @param [Fixnum] id the id of the node to find.
+    # @return [Rosemary::Way] the way with the given id.
     #
     def find_way(id)
       find_element('way', id)
@@ -52,14 +65,6 @@ module Rosemary
     #
     def find_relation(id)
       find_element('relation', id)
-    end
-
-    # Get a Changeset with specified ID from API.
-    #
-    # call-seq: find_changeset(id) -> Rosemary::Changeset
-    #
-    def find_changeset(id)
-      find_element('changeset', id)
     end
 
     # Get a Changeset with specified ID from API
@@ -79,7 +84,7 @@ module Rosemary
 
     # Get the user which represented by the Rosemary::Client
     #
-    # call-seq: find_user -> Rosemary::User
+    # @return: [Rosemary::User] user the user authenticated using the current client
     #
     def find_user
       raise CredentialsMissing if client.nil?
@@ -96,15 +101,21 @@ module Rosemary
       end
     end
 
-    # Delete an element
+    # Deletes the given element using API write access.
+    #
+    # @param [Rosemary::Element] element the element to be created
+    # @param [Rosemary::Changeset] changeset the changeset to be used to wrap the write access.
+    # @return [Fixnum] the new version of the deleted element.
     def destroy(element, changeset)
       element.changeset = changeset.id
       response = delete("/#{element.type.downcase}/#{element.id}", :body => element.to_xml) unless element.id.nil?
       response.to_i # New version number
     end
 
-    # Saves an element to the API.
-    # If it has no id yet, the element will be created, otherwise updated.
+    # Creates or updates an element depending on the current state of persistance.
+    #
+    # @param [Rosemary::Element] element the element to be created
+    # @param [Rosemary::Changeset] changeset the changeset to be used to wrap the write access.
     def save(element, changeset)
       response = if element.id.nil?
         create(element, changeset)
@@ -113,23 +124,49 @@ module Rosemary
       end
     end
 
+    # Create a new element using API write access.
+    #
+    # @param [Rosemary::Element] element the element to be created
+    # @param [Rosemary::Changeset] changeset the changeset to be used to wrap the write access.
+    # @return [Fixnum] the id of the newly created element.
     def create(element, changeset)
       element.changeset = changeset.id
       put("/#{element.type.downcase}/create", :body => element.to_xml)
     end
 
+    # Update an existing element using API write access.
+    #
+    # @param [Rosemary::Element] element the element to be created
+    # @param [Rosemary::Changeset] changeset the changeset to be used to wrap the write access.
+    # @return [Fixnum] the versiom of the updated element.
     def update(element, changeset)
       element.changeset = changeset.id
       response = put("/#{element.type.downcase}/#{element.id}", :body => element.to_xml)
       response.to_i # New Version number
     end
 
+    # Create a new changeset with an optional comment
+    #
+    # @param [String] comment a meaningful comment for this changeset
+    # @return [Rosemary::Changeset] the changeset which was newly created
+    # @raise [Rosemary::NotFound] in case the changeset could not be found
     def create_changeset(comment = nil)
       changeset = Changeset.new(:tags => { :comment => comment })
       changeset_id = put("/changeset/create", :body => changeset.to_xml).to_i
       find_changeset(changeset_id) unless changeset_id == 0
     end
 
+    # Get a Changeset with specified ID from API.
+    #
+    # @param [Integer] id the ID for the changeset you look for
+    # @return [Rosemary::Changeset] the changeset which was found with the id
+    def find_changeset(id)
+      find_element('changeset', id)
+    end
+
+    # Closes the given changeset.
+    #
+    # @param [Rosemary::Changeset] changeset the changeset to be closed
     def close_changeset(changeset)
       put("/changeset/#{changeset.id}/close")
     end
