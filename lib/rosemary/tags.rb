@@ -14,6 +14,10 @@ module Rosemary
       end unless empty?
     end
 
+    def []=(key, value)
+      super(key, value.strip)
+    end
+
     # Return string with comma separated key=value pairs.
     #
     # @return [String] string representation

@@ -69,6 +69,14 @@ describe Way do
     subject.to_xml.should match /uid=\"123\"/
   end
 
+  it "should have a version attribute for osm tag" do
+    subject.to_xml.should match /version=\"0.6\"/
+  end
+
+  it "should have a generator attribute for osm tag" do
+    subject.to_xml.should match /generator=\"rosemary v/
+  end
+
   it "should produce xml" do
     subject.add_tags(:wheelchair => 'yes')
     subject.to_xml.should match /k=\"wheelchair\"/

@@ -75,7 +75,7 @@ module Rosemary
     def to_xml(options = {})
       xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]
-      xml.osm do
+      xml.osm(:generator => "rosemary v#{Rosemary::VERSION}", :version => Rosemary::Api::API_VERSION) do
         xml.way(attributes) do
           nodes.each do |node_id|
             xml.nd(:ref => node_id)

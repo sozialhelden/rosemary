@@ -26,14 +26,16 @@ module Rosemary
 
     # Return XML for this relation. This method uses the Builder library.
     # The only parameter ist the builder object.
-    def to_xml(option = {})
+    def to_xml(options = {})
       xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]
-      xml.relation(attributes) do
-        members.each do |member|
-          member.to_xml(:builder => xml, :skip_instruct => true)
+      xml.osm(:generator => "rosemary v#{Rosemary::VERSION}", :version => Rosemary::Api::API_VERSION) do
+        xml.relation(attributes) do
+          members.each do |member|
+            member.to_xml(:builder => xml, :skip_instruct => true)
+          end
+          tags.to_xml(:builder => xml, :skip_instruct => true)
         end
-        tags.to_xml(:builder => xml, :skip_instruct => true)
       end
     end
 
