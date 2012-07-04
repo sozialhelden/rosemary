@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Christoph Bünte, Enno Brehm"]
-  s.date = "2012-03-22"
+  s.date = Time.now
   s.description = "OpenStreetMap API client for ruby"
   s.email = ["info@christophbuente.de"]
   s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md"]
