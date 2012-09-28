@@ -2,6 +2,7 @@ module Rosemary
   # This is a virtual parent class for the OSM objects Node, Way and Relation.
   class Element
     include ActiveModel::Validations
+    include Comparable
 
     # Unique ID
     # @return [Fixnum] id of this element
@@ -55,6 +56,19 @@ module Rosemary
       add_tags(attrs['tag']) if attrs['tag']
     end
 
+    def <=>(another_element)
+      attribute_list.each do |attrib|
+        next if self.send(attrib) == another_element.send(attrib)
+
+        if self.send(attrib) < another_element.send(attrib)
+          return -1
+        else
+          return 1
+        end
+      end
+      0
+    end
+
     # Create an error when somebody tries to set the ID.
     # (We need this here because otherwise method_missing will be called.)
     def id=(id) # :nodoc:
@@ -69,7 +83,7 @@ module Rosemary
 
     # The list of attributes for this object
     def attribute_list # :nodoc:
-      [:id, :version, :uid, :user, :timestamp, :tags]
+      [:id, :version, :uid, :user, :timestamp, :changeset, :tags]
     end
 
     # Returns a hash of all non-nil attributes of this object.

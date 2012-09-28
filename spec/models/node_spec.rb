@@ -113,4 +113,56 @@ describe Node do
     subject.name = " Allice and Bob "
     subject.to_xml.should match "\"Allice and Bob\""
   end
+
+  it "should compare identity depending on tags and attributes" do
+    first_node = Way.new('id' => 123, 'changeset' => '123', 'version' => 1, 'user' => 'horst', 'uid' => '123', 'timestamp' => '2005-07-30T14:27:12+01:00')
+    first_node.tags[:name] = 'Black horse'
+    second_node = Way.new('id' => 123, 'changeset' => '123', 'version' => 1, 'user' => 'horst', 'uid' => '123', 'timestamp' => '2005-07-30T14:27:12+01:00')
+    second_node.tags[:name] = 'Black horse'
+    first_node.should == second_node
+  end
+
+  it "should not be equal when id does not match" do
+    first_node = Way.new('id' => 123)
+    second_node = Way.new('id' => 234)
+    first_node.should_not == second_node
+  end
+
+  it "should not be equal when changeset does not match" do
+    first_node = Way.new('changeset' => 123)
+    second_node = Way.new('changeset' => 234)
+    first_node.should_not == second_node
+  end
+
+  it "should not be equal when version does not match" do
+    first_node = Way.new('version' => 1)
+    second_node = Way.new('version' => 2)
+    first_node.should_not == second_node
+  end
+
+  it "should not be equal when user does not match" do
+    first_node = Way.new('user' => 'horst')
+    second_node = Way.new('user' => 'jack')
+    first_node.should_not == second_node
+  end
+
+  it "should not be equal when uid does not match" do
+    first_node = Way.new('uid' => 123)
+    second_node = Way.new('uid' => 234)
+    first_node.should_not == second_node
+  end
+
+  it "should not be equal when timestamp does not match" do
+    first_node = Way.new('timestamp' => '2005-07-30T14:27:12+01:00')
+    second_node = Way.new('timestamp' => '2006-07-30T14:27:12+01:00')
+    first_node.should_not == second_node
+  end
+
+  it "should not be equal when tags do not match" do
+    first_node = Way.new('id' => 123)
+    first_node.tags[:name] = 'black horse'
+    second_node = Way.new('id' => 123)
+    second_node.tags[:name] = 'white horse'
+    first_node.should_not == second_node
+  end
 end

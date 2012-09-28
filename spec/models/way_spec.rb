@@ -87,4 +87,66 @@ describe Way do
     subject.add_tags(:wheelchair => '')
     subject.to_xml.should_not match /k=\"wheelchair\"/
   end
+
+  it "should compare identity depending on tags and attributes" do
+    first_way = Way.new('id' => 123, 'changeset' => '123', 'version' => 1, 'user' => 'horst', 'uid' => '123', 'timestamp' => '2005-07-30T14:27:12+01:00')
+    first_way.tags[:name] = 'Black horse'
+    second_way = Way.new('id' => 123, 'changeset' => '123', 'version' => 1, 'user' => 'horst', 'uid' => '123', 'timestamp' => '2005-07-30T14:27:12+01:00')
+    second_way.tags[:name] = 'Black horse'
+    first_way.should == second_way
+  end
+
+  it "should not be equal when id does not match" do
+    first_way = Way.new('id' => 123)
+    second_way = Way.new('id' => 234)
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when changeset does not match" do
+    first_way = Way.new('changeset' => 123)
+    second_way = Way.new('changeset' => 234)
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when version does not match" do
+    first_way = Way.new('version' => 1)
+    second_way = Way.new('version' => 2)
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when user does not match" do
+    first_way = Way.new('user' => 'horst')
+    second_way = Way.new('user' => 'jack')
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when uid does not match" do
+    first_way = Way.new('uid' => 123)
+    second_way = Way.new('uid' => 234)
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when timestamp does not match" do
+    first_way = Way.new('timestamp' => '2005-07-30T14:27:12+01:00')
+    second_way = Way.new('timestamp' => '2006-07-30T14:27:12+01:00')
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when nodes do not match" do
+    first_way = Way.new('id' => 123)
+    first_way.nodes << 1
+    first_way.nodes << 2
+    second_way = Way.new('id' => 123)
+    second_way.nodes << 1
+    second_way.nodes << 3
+    first_way.should_not == second_way
+  end
+
+  it "should not be equal when tags do not match" do
+    first_way = Way.new('id' => 123)
+    first_way.tags[:name] = 'black horse'
+    second_way = Way.new('id' => 123)
+    second_way.tags[:name] = 'white horse'
+    first_way.should_not == second_way
+  end
 end
