@@ -44,13 +44,11 @@ module Rosemary
       # don't bother to compare more stuff if parent comparison failed
       return parent_compare unless parent_compare == 0
 
+      return -1 if self.send(:tags) != another_relation.send(:tags)
+
       members_compare = self.send(:members).sort <=> another_relation.send(:members).sort
       # don't bother to compare more stuff if nodes comparison failed
       return members_compare unless members_compare == 0
-
-      tags_compare = self.send(:tags).sort <=> another_relation.send(:tags).sort
-      # don't bother to compare more stuff if tags comparison failed
-      return tags_compare unless tags_compare == 0
 
       0
     end

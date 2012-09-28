@@ -53,9 +53,7 @@ module Rosemary
       # don't bother to compare more stuff if parent comparison failed
       return parent_compare unless parent_compare == 0
 
-      tags_compare = self.send(:tags).sort <=> another_node.send(:tags).sort
-      # don't bother to compare more stuff if tags comparison failed
-      return tags_compare unless tags_compare == 0
+      return -1 if self.send(:tags) != another_node.send(:tags)
 
       0
     end
