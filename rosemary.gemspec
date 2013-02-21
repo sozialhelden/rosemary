@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<httparty>, [">= 0.10.0"])
       s.add_runtime_dependency(%q<libxml-ruby>, [">= 2.4.0"])
-      s.add_runtime_dependency(%q<builder>, [">= 3.0.0"])
+      s.add_runtime_dependency(%q<builder>, [">= 2.1.2"])
       s.add_runtime_dependency(%q<oauth>, [">= 0.4.7"])
       s.add_runtime_dependency(%q<activemodel>, [">= 3.0.20"])
       s.add_development_dependency(%q<rspec>, [">= 2.7"])
@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<httparty>, [">= 0.10.0"])
       s.add_dependency(%q<libxml-ruby>, [">= 2.4.0"])
-      s.add_dependency(%q<builder>, [">= 3.0.0"])
+      s.add_dependency(%q<builder>, [">= 2.1.2"])
       s.add_dependency(%q<oauth>, [">= 0.4.7"])
       s.add_dependency(%q<activemodel>, [">= 3.0.20"])
       s.add_dependency(%q<rspec>, [">= 2.7"])
@@ -54,7 +54,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<httparty>, [">= 0.10.0"])
     s.add_dependency(%q<libxml-ruby>, [">= 2.4.0"])
-    s.add_dependency(%q<builder>, [">= 3.0.0"])
+    s.add_dependency(%q<builder>, [">= 2.1.2"])
     s.add_dependency(%q<oauth>, [">= 0.4.7"])
     s.add_dependency(%q<activemodel>, [">= 3.0.20"])
     s.add_dependency(%q<rspec>, [">= 2.7"])
