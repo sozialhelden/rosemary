@@ -165,4 +165,13 @@ describe Node do
     second_node.tags[:name] = 'white horse'
     first_node.should_not == second_node
   end
+
+  it "should be ok to pass tags with emtpy value" do
+    lambda {
+      subject.add_tags({"wheelchair_description"=>"", "type"=>"convenience",
+        "street"=>nil, "name"=>"Kochhaus", "wheelchair"=>nil, "postcode"=>nil,
+        "phone"=>nil, "city"=>nil, "website"=>nil, "lon"=>"13.35598468780518",
+        "lat"=>"52.48627569798567", "housenumber"=>nil})
+    }.should_not raise_error
+  end
 end

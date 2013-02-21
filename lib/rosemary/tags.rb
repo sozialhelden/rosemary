@@ -15,6 +15,8 @@ module Rosemary
     end
 
     def []=(key, value)
+      # Ignore empty values, cause we don't want them in the OSM anyways
+      return if value.blank?
       super(key, value.strip)
     end
 
