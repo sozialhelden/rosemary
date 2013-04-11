@@ -10,14 +10,15 @@ module Rosemary
       xml = options[:builder] ||= Builder::XmlMarkup.new
       xml.instruct! unless options[:skip_instruct]
       each do |key, value|
-        xml.tag(:k => key, :v => value) unless value.blank?
+        # Remove leading and trailing whitespace from tag values
+        xml.tag(:k => key, :v => value.strip) unless value.blank?
       end unless empty?
     end
 
     def []=(key, value)
       # Ignore empty values, cause we don't want them in the OSM anyways
       return if value.blank?
-      super(key, value.strip)
+      super(key, value)
     end
 
     # Return string with comma separated key=value pairs.
