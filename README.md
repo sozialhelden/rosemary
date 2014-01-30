@@ -1,8 +1,9 @@
 # Rosemary: OpenStreetMap for Ruby
 
-[![Build Status](https://travis-ci.org/sozialhelden/rosemary.png?branch=master)](https://travis-ci.org/sozialhelden/rosemary)
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/sozialhelden/rosemary)
 [![Gem Version](https://fury-badge.herokuapp.com/rb/rosemary.png)](http://badge.fury.io/rb/rosemary)
+[![Build Status](https://travis-ci.org/sozialhelden/rosemary.png?branch=master)](https://travis-ci.org/sozialhelden/rosemary)
+[![Dependency Status](https://gemnasium.com/sozialhelden/rosemary.png)](https://gemnasium.com/sozialhelden/rosemary)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/sozialhelden/rosemary)
 
 This ruby gem is an API client for the current OpenStreetMap [API v0.6](http://wiki.openstreetmap.org/wiki/API_v0.6). It provides easy access to OpenStreetMap (OSM) data.
 
