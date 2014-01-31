@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<httparty>, [">= 0.10.0"])
+      s.add_runtime_dependency(%q<httparty>, ["~> 0.10.0"])
       s.add_runtime_dependency(%q<libxml-ruby>, [">= 2.4.0"])
       s.add_runtime_dependency(%q<builder>, [">= 2.1.2"])
       s.add_runtime_dependency(%q<oauth>, [">= 0.4.7"])
@@ -39,8 +39,9 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rake>, [">= 0.9"])
       s.add_development_dependency(%q<yard>, [">= 0.8"])
       s.add_development_dependency(%q<redcarpet>, [">= 2.2.0"])
+      s.add_development_dependency(%q<coveralls>)
     else
-      s.add_dependency(%q<httparty>, [">= 0.10.0"])
+      s.add_dependency(%q<httparty>, ["~> 0.10.0"])
       s.add_dependency(%q<libxml-ruby>, [">= 2.4.0"])
       s.add_dependency(%q<builder>, [">= 2.1.2"])
       s.add_dependency(%q<oauth>, [">= 0.4.7"])
@@ -50,9 +51,10 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rake>, [">= 0.9"])
       s.add_dependency(%q<yard>, [">= 0.8"])
       s.add_dependency(%q<redcarpet>, [">= 2.2.0"])
+      s.add_dependency(%q<coveralls>)
     end
   else
-    s.add_dependency(%q<httparty>, [">= 0.10.0"])
+    s.add_dependency(%q<httparty>, ["~> 0.10.0"])
     s.add_dependency(%q<libxml-ruby>, [">= 2.4.0"])
     s.add_dependency(%q<builder>, [">= 2.1.2"])
     s.add_dependency(%q<oauth>, [">= 0.4.7"])
@@ -62,5 +64,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rake>, [">= 0.9"])
     s.add_dependency(%q<yard>, [">= 0.8"])
     s.add_dependency(%q<redcarpet>, [">= 2.2.0"])
+    s.add_dependency(%q<coveralls>)
   end
 end
