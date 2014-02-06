@@ -1,7 +1,8 @@
 require 'webmock/rspec'
 require 'rosemary'
-
 require 'libxml'
+require 'coveralls'
+Coveralls.wear!
 
 RSpec::Matchers.define :have_xml do |xpath, text|
   match do |body|
