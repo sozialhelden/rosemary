@@ -4,6 +4,8 @@
 [![Build Status](https://travis-ci.org/sozialhelden/rosemary.png?branch=master)](https://travis-ci.org/sozialhelden/rosemary)
 [![Dependency Status](https://gemnasium.com/sozialhelden/rosemary.png)](https://gemnasium.com/sozialhelden/rosemary)
 [![Code Climate](https://codeclimate.com/github/sozialhelden/rosemary.png)](https://codeclimate.com/github/sozialhelden/rosemary)
+[![Gittip      ](http://img.shields.io/gittip/sozialhelden.png)                     ](https://gittip.com/sozialhelden)
+[![License     ](http://img.shields.io/license/MIT.png?color=green)                ](https://github.com/sozialhelden/rosemary/blob/master/LICENSE)
 
 This ruby gem is an API client for the current OpenStreetMap [API v0.6](http://wiki.openstreetmap.org/wiki/API_v0.6). It provides easy access to OpenStreetMap (OSM) data.
 
