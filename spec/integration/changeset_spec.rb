@@ -102,27 +102,27 @@ describe Changeset do
       body = Changeset.new(:tags => { :comment => 'New changeset' }).to_xml
 
       stub_create_request.with(:body => body).to_return(:status => 200, :body => "3", :headers => {'Content-Type' => 'plain/text'})
-      auth_osm.should_receive(:find_changeset).with(3).and_return(cs = mock())
+      auth_osm.should_receive(:find_changeset).with(3).and_return(cs = double())
       auth_osm.create_changeset('New changeset').should == cs
     end
   end
 
   describe "#find_or_create_open_changeset" do
     it "returns an exisiting changeset if that exists and is open" do
-      auth_osm.should_receive(:find_changeset).with(3).and_return(cs = mock(:open? => true))
+      auth_osm.should_receive(:find_changeset).with(3).and_return(cs = double(:open? => true))
       auth_osm.should_not_receive(:create_changeset)
       auth_osm.find_or_create_open_changeset(3, "some foo comment").should == cs
     end
 
     it "returns an new changeset if the requested one exists and is closed" do
-      auth_osm.should_receive(:find_changeset).with(3).and_return(mock(:open? => false))
-      auth_osm.should_receive(:create_changeset).with("some foo comment").and_return(cs = mock())
+      auth_osm.should_receive(:find_changeset).with(3).and_return(double(:open? => false))
+      auth_osm.should_receive(:create_changeset).with("some foo comment").and_return(cs = double())
       auth_osm.find_or_create_open_changeset(3, "some foo comment").should == cs
     end
 
     it "returns an new changeset if the requested one doesn't exist" do
       auth_osm.should_receive(:find_changeset).with(3).and_return(nil)
-      auth_osm.should_receive(:create_changeset).with("some foo comment").and_return(cs = mock())
+      auth_osm.should_receive(:create_changeset).with("some foo comment").and_return(cs = double())
       auth_osm.find_or_create_open_changeset(3, "some foo comment").should == cs
     end
 
