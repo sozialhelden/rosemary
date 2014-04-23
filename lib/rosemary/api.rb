@@ -192,6 +192,14 @@ module Rosemary
       end
     end
 
+    # Create a note
+    #
+    # call-seq: create_note(lat: 51.00, lon: 0.1, text: 'Test note') -> Rosemary::Note
+    #
+    def create_note(note)
+      post("/notes", :query => note)
+    end
+
     private
 
     # most GET requests are valid without authentication, so this is the standard

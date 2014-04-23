@@ -54,9 +54,12 @@ class Rosemary::Parser < HTTParty::Parser
     when 'member'       then _member(attr_hash)
     when 'home'         then _home(attr_hash)
     when 'description'  then @description = true
-    when 'permissions'   then _start_permissions(attr_hash)
+    when 'permissions'  then _start_permissions(attr_hash)
     when 'permission'   then _start_permission(attr_hash)
     when 'lang'         then @lang        = true
+    when 'note'         then _start_note(attr_hash)
+    when 'id'           then @id          = true
+    when 'text'         then @text        = true
     end
   end
 
@@ -64,6 +67,8 @@ class Rosemary::Parser < HTTParty::Parser
     case name
     when 'description'  then @description = false
     when 'lang'         then @lang        = false
+    when 'id'           then @id          = false
+    when 'text'         then @text        = false
     when 'changeset'    then _end_changeset
     end
   end
@@ -75,6 +80,14 @@ class Rosemary::Parser < HTTParty::Parser
       end
       if @lang
         @context.languages << chars
+      end
+    end
+    if @context.class.name == 'Rosemary::Note'
+      if @id
+        @context.id = chars
+      end
+      if @text
+        @context.text << chars
       end
     end
   end
@@ -94,6 +107,10 @@ class Rosemary::Parser < HTTParty::Parser
 
   def _start_changeset(attr_hash)
     @context = Rosemary::Changeset.new(attr_hash)
+  end
+
+  def _start_note(attr_hash)
+    @context = Rosemary::Note.new(attr_hash)
   end
 
   def _start_permissions(_)
