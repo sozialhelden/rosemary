@@ -43,23 +43,34 @@ class Rosemary::Parser < HTTParty::Parser
   end
 
   def on_start_element(name, attr_hash)   # :nodoc:
-    case name
-    when 'node'         then _start_node(attr_hash)
-    when 'way'          then _start_way(attr_hash)
-    when 'relation'     then _start_relation(attr_hash)
-    when 'changeset'    then _start_changeset(attr_hash)
-    when 'user'         then _start_user(attr_hash)
-    when 'tag'          then _tag(attr_hash)
-    when 'nd'           then _nd(attr_hash)
-    when 'member'       then _member(attr_hash)
-    when 'home'         then _home(attr_hash)
-    when 'description'  then @description = true
-    when 'permissions'  then _start_permissions(attr_hash)
-    when 'permission'   then _start_permission(attr_hash)
-    when 'lang'         then @lang        = true
-    when 'note'         then _start_note(attr_hash)
-    when 'id'           then @id          = true
-    when 'text'         then @text        = true
+    case @context.class.name
+    when 'Rosemary::User'
+      case name
+      when 'description'  then @description = true
+      when 'lang'         then @lang        = true
+      end
+    when 'Rosemary::Note'
+      case name
+      when 'id'           then @id          = true
+      when 'text'         then @text        = true
+      when 'user'         then @user        = true
+      when 'action'       then @action      = true
+      end
+    else
+      case name
+      when 'node'         then _start_node(attr_hash)
+      when 'way'          then _start_way(attr_hash)
+      when 'relation'     then _start_relation(attr_hash)
+      when 'changeset'    then _start_changeset(attr_hash)
+      when 'user'         then _start_user(attr_hash)
+      when 'tag'          then _tag(attr_hash)
+      when 'nd'           then _nd(attr_hash)
+      when 'member'       then _member(attr_hash)
+      when 'home'         then _home(attr_hash)
+      when 'permissions'  then _start_permissions(attr_hash)
+      when 'permission'   then _start_permission(attr_hash)
+      when 'note'         then _start_note(attr_hash)
+      end
     end
   end
 
@@ -69,26 +80,22 @@ class Rosemary::Parser < HTTParty::Parser
     when 'lang'         then @lang        = false
     when 'id'           then @id          = false
     when 'text'         then @text        = false
+    when 'action'       then @action      = false
+    when 'user'         then @user        = false
     when 'changeset'    then _end_changeset
     end
   end
 
   def on_characters(chars)
-    if @context.class.name == 'Rosemary::User'
-      if @description
-        @context.description = chars
-      end
-      if @lang
-        @context.languages << chars
-      end
-    end
-    if @context.class.name == 'Rosemary::Note'
-      if @id
-        @context.id = chars
-      end
-      if @text
-        @context.text << chars
-      end
+    case @context.class.name
+    when 'Rosemary::User'
+      @context.description = chars if @description
+      @context.languages << chars if @lang
+    when 'Rosemary::Note'
+      @context.id = chars if @id
+      @context.text << chars if @text
+      @context.user = chars if @user
+      @context.action = chars if @action
     end
   end
 

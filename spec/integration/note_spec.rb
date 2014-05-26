@@ -11,16 +11,19 @@ describe Note do
   def valid_fake_note
     note=<<-EOF
     <osm version="0.6" generator="OpenStreetMap server">
-    <note lon="120.9283065" lat="15.0115916">
-      <id>397</id>
-      <url>http://api06.dev.openstreetmap.org/api/0.6/notes/397</url>
-      <comment_url>http://api06.dev.openstreetmap.org/api/0.6/notes/397/comment</comment_url>
-      <close_url>http://api06.dev.openstreetmap.org/api/0.6/notes/397/close</close_url>
-      <date_created>2014-04-23 13:57:37 UTC</date_created>
+    <note lon="102.2205" lat="2.1059">
+      <id>174576</id>
+      <url>http://www.openstreetmap.org/api/0.6/notes/174576</url>
+      <comment_url>http://www.openstreetmap.org/api/0.6/notes/174576/comment</comment_url>
+      <close_url>http://www.openstreetmap.org/api/0.6/notes/174576/close</close_url>
+      <date_created>2014-05-26 16:00:04 UTC</date_created>
       <status>open</status>
       <comments>
         <comment>
-          <date>2014-04-23 13:57:37 UTC</date>
+          <date>2014-05-26 16:00:04 UTC</date>
+          <uid>2044077</uid>
+          <user>osmthis</user>
+          <user_url>http://www.openstreetmap.org/user/osmthis</user_url>
           <action>opened</action>
           <text>Test note</text>
           <html>&lt;p&gt;Test note&lt;/p&gt;</html>
@@ -40,7 +43,7 @@ describe Note do
     describe '#create_note:' do
 
       def request_url
-        "http://a_username:a_password@www.openstreetmap.org/api/0.6/notes?lat=15.0115916&lon=120.9283065&text=Test%20note"
+        "http://a_username:a_password@www.openstreetmap.org/api/0.6/notes?lat=2.1059&lon=102.2205&text=Test%20note"
       end
 
       def stubbed_request
@@ -48,7 +51,7 @@ describe Note do
       end
 
       def valid_note
-        {lon: 120.9283065, lat: 15.0115916, text: 'Test note'}
+        {lon: 102.2205, lat: 2.1059, text: 'Test note'}
       end
 
       it "should create a new Note from given attributes" do
@@ -56,10 +59,12 @@ describe Note do
           to_return(:status => 200, :body => valid_fake_note, :headers => {'Content-Type' => 'application/xml'})
 
         new_note = osm.create_note(valid_note)
-        new_note.id.should eql '397'
-        new_note.lon.should eql '120.9283065'
-        new_note.lat.should eql '15.0115916'
+        new_note.id.should eql '174576'
+        new_note.lon.should eql '102.2205'
+        new_note.lat.should eql '2.1059'
         new_note.text.should eql 'Test note'
+        new_note.user.should eql 'osmthis'
+        new_note.action.should eql 'opened'
       end
     end
 
