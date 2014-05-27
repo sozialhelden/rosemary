@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.date = Time.now
   s.description = "OpenStreetMap API client for ruby"
   s.email = ["info@christophbuente.de"]
-  s.extra_rdoc_files = ["CHANGELOG", "LICENSE", "README.md"]
+  s.extra_rdoc_files = ["CHANGELOG.md", "LICENSE", "README.md"]
   s.homepage = "https://github.com/sozialhelden/rosemary"
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "OpenStreetMap", "--main", "README.md"]
   s.require_paths = ["lib"]
