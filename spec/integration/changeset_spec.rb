@@ -116,16 +116,21 @@ describe Changeset do
 
     it "returns an new changeset if the requested one exists and is closed" do
       auth_osm.should_receive(:find_changeset).with(3).and_return(double(:open? => false))
-      auth_osm.should_receive(:create_changeset).with("some foo comment").and_return(cs = double())
+      auth_osm.should_receive(:create_changeset).with("some foo comment", {}).and_return(cs = double())
       auth_osm.find_or_create_open_changeset(3, "some foo comment").should == cs
     end
 
     it "returns an new changeset if the requested one doesn't exist" do
       auth_osm.should_receive(:find_changeset).with(3).and_return(nil)
-      auth_osm.should_receive(:create_changeset).with("some foo comment").and_return(cs = double())
+      auth_osm.should_receive(:create_changeset).with("some foo comment", {}).and_return(cs = double())
       auth_osm.find_or_create_open_changeset(3, "some foo comment").should == cs
     end
 
+    it "appends arbitrary tags to the changeset itself" do
+      auth_osm.should_receive(:find_changeset).with(3).and_return(nil)
+      auth_osm.should_receive(:create_changeset).with("some foo comment", :source => 'http://example.com' ).and_return(cs = double())
+      auth_osm.find_or_create_open_changeset(3, "some foo comment", :source => 'http://example.com' ).should == cs
+    end
   end
 
   describe '#find_for_user' do

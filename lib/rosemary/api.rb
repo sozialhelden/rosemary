@@ -73,8 +73,8 @@ module Rosemary
     #
     # call-seq: find_or_create_open_changeset(id, comment) -> Rosemary::Changeset
     #
-    def find_or_create_open_changeset(id, comment = nil)
-      find_open_changeset(id) || create_changeset(comment)
+    def find_or_create_open_changeset(id, comment = nil, tags = {})
+      find_open_changeset(id) || create_changeset(comment, tags)
     end
 
     def find_open_changeset(id)
@@ -150,8 +150,9 @@ module Rosemary
     # @param [String] comment a meaningful comment for this changeset
     # @return [Rosemary::Changeset] the changeset which was newly created
     # @raise [Rosemary::NotFound] in case the changeset could not be found
-    def create_changeset(comment = nil)
-      changeset = Changeset.new(:tags => { :comment => comment })
+    def create_changeset(comment = nil, tags = {})
+      tags.merge!(:comment => comment) { |key, v1, v2| v1 }
+      changeset = Changeset.new(:tags => tags)
       changeset_id = put("/changeset/create", :body => changeset.to_xml).to_i
       find_changeset(changeset_id) unless changeset_id == 0
     end
