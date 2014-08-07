@@ -15,7 +15,7 @@ describe Parser do
       EOF
 
       n = Parser.call(node_xml, :xml)
-      n.name.should == "The rose & the pony"
+      expect(n.name).to eql "The rose & the pony"
 
 
 
@@ -30,7 +30,7 @@ describe Parser do
       EOF
 
       permissions = Parser.call(permissions_xml, :xml)
-      permissions.raw.should be_empty
+      expect(permissions.raw).to be_empty
     end
 
     it "parses permissions" do
@@ -44,11 +44,11 @@ describe Parser do
       EOF
 
       permissions = Parser.call(permissions_xml, :xml)
-      permissions.raw.sort.should == %w(allow_read_prefs allow_write_api)
+      expect(permissions.raw.sort).to eql %w(allow_read_prefs allow_write_api)
 
-      permissions.allow_write_api?.should be_true
-      permissions.allow_read_prefs?.should be_true
-      permissions.allow_write_prefs?.should be_false
+      expect(permissions.allow_write_api?).to eql true
+      expect(permissions.allow_read_prefs?).to eql true
+      expect(permissions.allow_write_prefs?).to eql false
     end
   end
 

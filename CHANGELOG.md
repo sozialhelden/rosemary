@@ -2,6 +2,12 @@ rosemary CHANGELOG
 ===================================
 This file is used to list changes made in each version.
 
+v0.4.2 (2014 Aug 7)
+------
+
+* Allow arbitrary tags to be attached to changeset
+* Upgrade all specs to 'expect' syntax instead of 'should'
+
 
 v0.4.1 (2014 May 27)
 ------

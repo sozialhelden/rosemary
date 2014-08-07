@@ -9,7 +9,7 @@ RSpec::Matchers.define :have_xml do |xpath, text|
     parser = LibXML::XML::Parser.string body
     doc = parser.parse
     nodes = doc.find(xpath)
-    nodes.empty?.should be_false
+    expect(nodes).not_to be_empty
     if text
       nodes.each do |node|
         node.content.should == text
@@ -18,11 +18,11 @@ RSpec::Matchers.define :have_xml do |xpath, text|
     true
   end
 
-  failure_message_for_should do |body|
+  failure_message do |body|
     "expected to find xml tag #{xpath} in:\n#{body}"
   end
 
-  failure_message_for_should_not do |response|
+  failure_message_when_negated do |response|
     "expected not to find xml tag #{xpath} in:\n#{body}"
   end
 

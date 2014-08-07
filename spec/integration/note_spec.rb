@@ -59,12 +59,12 @@ describe Note do
           to_return(:status => 200, :body => valid_fake_note, :headers => {'Content-Type' => 'application/xml'})
 
         new_note = osm.create_note(valid_note)
-        new_note.id.should eql '174576'
-        new_note.lon.should eql '102.2205'
-        new_note.lat.should eql '2.1059'
-        new_note.text.should eql 'Test note'
-        new_note.user.should eql 'osmthis'
-        new_note.action.should eql 'opened'
+        expect(new_note.id).to eql '174576'
+        expect(new_note.lon).to eql '102.2205'
+        expect(new_note.lat).to eql '2.1059'
+        expect(new_note.text).to eql 'Test note'
+        expect(new_note.user).to eql 'osmthis'
+        expect(new_note.action).to eql 'opened'
       end
     end
 

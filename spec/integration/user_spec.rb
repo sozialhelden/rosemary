@@ -47,14 +47,14 @@ describe User do
     it "should build a User from API response via find_user" do
       stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'})
       user = osm.find_user
-      user.class.should eql User
+      expect(user.class).to eql User
     end
 
     it "should raise error from api" do
       stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 403, :body => "OAuth token doesn't have that capability.", :headers => {'Content-Type' => 'plain/text'})
-      lambda {
+      expect {
         osm.find_user
-      }.should raise_error Forbidden
+      }.to raise_exception Forbidden
     end
   end
 end

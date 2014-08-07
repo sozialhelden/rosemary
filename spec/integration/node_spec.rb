@@ -72,32 +72,32 @@ describe Node do
       stubbed_request.to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
       node = osm.find_node 1234
       assert_requested :get, request_url, :times => 1
-      node.class.should eql Node
-      node.tags.size.should eql 3
-      node.tags['name'].should eql 'The rose'
-      node['name'].should eql 'The rose'
+      expect(node.class).to eql Node
+      expect(node.tags.size).to eql 3
+      expect(node.tags['name']).to eql 'The rose'
+      expect(node['name']).to eql 'The rose'
       node.add_tags('wheelchair' => 'yes')
-      node['wheelchair'].should eql 'yes'
+      expect(node['wheelchair']).to eql 'yes'
     end
 
     it "should raise a Unavailable, when api times out" do
       stubbed_request.to_timeout
-      lambda {
+      expect {
         node = osm.find_node(1234)
-      }.should raise_error(Unavailable)
+      }.to raise_exception(Unavailable)
     end
 
     it "should raise an Gone error, when a node has been deleted" do
       stubbed_request.to_return(:status => 410, :body => '', :headers => {'Content-Type' => 'text/plain'})
-      lambda {
+      expect {
         node = osm.find_node(1234)
-      }.should raise_error(Gone)
+      }.to raise_exception(Gone)
     end
 
     it "should raise an NotFound error, when a node cannot be found" do
       stubbed_request.to_return(:status => 404, :body => '', :headers => {'Content-Type' => 'text/plain'})
       node = osm.find_node(1234)
-      node.should be_nil
+      expect(node).to be_nil
     end
   end
 
@@ -142,37 +142,37 @@ describe Node do
 
       it "should raise a Unavailable, when api times out" do
         stubbed_request.to_timeout
-        lambda {
+        expect {
           new_id = osm.create(node, changeset)
-        }.should raise_error(Unavailable)
+        }.to raise_exception(Unavailable)
       end
 
       it "should not create a Node with invalid xml but raise BadRequest" do
         stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           new_id = osm.save(node, changeset)
-        }.should raise_error(BadRequest)
+        }.to raise_exception(BadRequest)
       end
 
       it "should not allow to create a node when a changeset has been closed" do
         stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           new_id = osm.save(node, changeset)
-        }.should raise_error(Conflict)
+        }.to raise_exception(Conflict)
       end
 
       it "should not allow to create a node when no authentication client is given" do
         osm = Api.new
-        lambda {
+        expect {
           osm.save(node, changeset)
-        }.should raise_error(CredentialsMissing)
+        }.to raise_exception(CredentialsMissing)
       end
 
       it "should set a changeset" do
         stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
         osm.save(node, changeset)
-        node.changeset.should == changeset.id
+        expect(node.changeset).to eql changeset.id
       end
     end
 
@@ -191,16 +191,16 @@ describe Node do
         stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
-        node.should_receive(:changeset=)
+        expect(node).to receive(:changeset=)
         new_version = osm.save(node, changeset)
-        new_version.should eql 43
+        expect(new_version).to eql 43
       end
 
       it "should set a changeset" do
         stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
         osm.save(node, changeset)
-        node.changeset.should == changeset.id
+        expect(node.changeset).to eql changeset.id
       end
 
 
@@ -225,56 +225,56 @@ describe Node do
 
       it "should delete an existing node" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
-        node.should_receive(:changeset=)
+        expect(node).to receive(:changeset=)
         new_version = osm.destroy(node, changeset)
-        new_version.should eql 43 # new version number
+        expect(new_version).to eql 43 # new version number
       end
 
       it "should raise an error if node to be deleted is still part of a way" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           response = osm.destroy(node, changeset)
-          response.should eql "Version does not match current database version"
-        }.should raise_error BadRequest
+          expect(response).to eql "Version does not match current database version"
+        }.to raise_exception BadRequest
       end
 
       it "should raise an error if node cannot be found" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 404, :body => 'Node cannot be found', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           response = osm.destroy(node, changeset)
-          response.should eql "Node cannot be found"
-        }.should raise_error NotFound
+          expect(response).to eql "Node cannot be found"
+        }.to raise_exception NotFound
       end
 
       it "should raise an error if there is a conflict" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 409, :body => 'Node has been deleted in this changeset', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           response = osm.destroy(node, changeset)
-          response.should eql "Node has been deleted in this changeset"
-        }.should raise_error Conflict
+          expect(response).to eql "Node has been deleted in this changeset"
+        }.to raise_exception Conflict
       end
 
       it "should raise an error if the node is already delted" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 410, :body => 'Node has been deleted', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           response = osm.destroy(node, changeset)
-          response.should eql "Node has been deleted"
-        }.should raise_error Gone
+          expect(response).to eql "Node has been deleted"
+        }.to raise_exception Gone
       end
 
       it "should raise an error if the node is part of a way" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 412, :body => 'Node 123 is still used by way 456', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           response = osm.destroy(node, changeset)
-          response.should eql "Node 123 is still used by way 456"
-        }.should raise_error Precondition
+          expect(response).to eql "Node 123 is still used by way 456"
+        }.to raise_exception Precondition
       end
 
       it "should set the changeset an existing node" do
         stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
         new_version = osm.destroy(node, changeset)
-        node.changeset.should == changeset.id
+        expect(node.changeset).to eql changeset.id
       end
     end
   end
@@ -324,37 +324,37 @@ describe Node do
 
       it "should create a new Node from given attributes" do
         stubbed_request.to_return(:status => 200, :body => '123', :headers => {'Content-Type' => 'text/plain'})
-        node.id.should be_nil
+        expect(node.id).to be_nil
         new_id = osm.save(node, changeset)
       end
 
       it "should raise a Unavailable, when api times out" do
         stubbed_request.to_timeout
-        lambda {
+        expect {
           new_id = osm.save(node, changeset)
-        }.should raise_error(Unavailable)
+        }.to raise_exception(Unavailable)
       end
 
 
       it "should not create a Node with invalid xml but raise BadRequest" do
         stubbed_request.to_return(:status => 400, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           new_id = osm.save(node, changeset)
-        }.should raise_error(BadRequest)
+        }.to raise_exception(BadRequest)
       end
 
       it "should not allow to create a node when a changeset has been closed" do
         stubbed_request.to_return(:status => 409, :body => 'The given node is invalid', :headers => {'Content-Type' => 'text/plain'})
-        lambda {
+        expect {
           new_id = osm.save(node, changeset)
-        }.should raise_error(Conflict)
+        }.to raise_exception(Conflict)
       end
 
       it "should not allow to create a node when no authentication client is given" do
         osm = Api.new
-        lambda {
+        expect {
           osm.save(node, changeset)
-        }.should raise_error(CredentialsMissing)
+        }.to raise_exception(CredentialsMissing)
       end
 
     end
@@ -375,9 +375,9 @@ describe Node do
         stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
-        node.should_receive(:changeset=)
+        expect(node).to receive(:changeset=)
         new_version = osm.save(node, changeset)
-        new_version.should eql 43
+        expect(new_version).to eql 43
       end
     end
 
@@ -395,11 +395,11 @@ describe Node do
 
       it "should delete an existing node" do
         stub_request(:delete, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
-        node.should_receive(:changeset=)
-        lambda {
+        expect(node).to receive(:changeset=)
+        expect {
           # Delete is not implemented using oauth
           new_version = osm.destroy(node, changeset)
-        }.should raise_error(NotImplemented)
+        }.to raise_exception(NotImplemented)
       end
     end
   end
