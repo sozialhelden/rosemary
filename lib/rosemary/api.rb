@@ -93,6 +93,19 @@ module Rosemary
       resp
     end
 
+    # Get the bounding box which is represented by the Rosemary::BoundingBox
+    #
+    # @param [Numeric] left is the longitude of the left (westernmost) side of the bounding box.
+    # @param [Numeric] bottom is the latitude of the bottom (southernmost) side of the bounding box.
+    # @param [Numeric] right is the longitude of the right (easternmost) side of the bounding box.
+    # @param [Numeric] top is the latitude of the top (northernmost) side of the bounding box.
+    # @return [Rosemary::BoundingBox] the bounding box containing all ways, nodes and relations inside the given coordinates
+    #
+    def find_bounding_box(left,bottom,right,top)
+      do_request(:get, "/map?bbox=#{left},#{bottom},#{right},#{top}", {} )
+    end
+
+
     def permissions
       if client.nil?
         get("/permissions")

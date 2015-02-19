@@ -26,7 +26,12 @@ class Rosemary::Parser < HTTParty::Parser
 
     @parser.callbacks = self
     @parser.parse
-    @collection.empty? ? @context : @collection
+
+    if @bounding_box
+      @bounding_box
+    else
+      @collection.empty? ? @context : @collection
+    end
   end
 
   def plain
@@ -70,6 +75,7 @@ class Rosemary::Parser < HTTParty::Parser
       when 'permissions'  then _start_permissions(attr_hash)
       when 'permission'   then _start_permission(attr_hash)
       when 'note'         then _start_note(attr_hash)
+      when 'bounds'       then _start_bounds(attr_hash)
       end
     end
   end
@@ -101,15 +107,21 @@ class Rosemary::Parser < HTTParty::Parser
 
   private
   def _start_node(attr_hash)
-    @context = Rosemary::Node.new(attr_hash)
+    node = Rosemary::Node.new(attr_hash)
+    @bounding_box.nodes << node if @bounding_box
+    @context = node
   end
 
   def _start_way(attr_hash)
-    @context = Rosemary::Way.new(attr_hash)
+    way = Rosemary::Way.new(attr_hash)
+    @bounding_box.ways << way if @bounding_box
+    @context = way
   end
 
   def _start_relation(attr_hash)
-    @context = Rosemary::Relation.new(attr_hash)
+    relation = Rosemary::Relation.new(attr_hash)
+    @bounding_box.relations << relation if @bounding_box
+    @context = relation
   end
 
   def _start_changeset(attr_hash)
@@ -161,6 +173,10 @@ class Rosemary::Parser < HTTParty::Parser
     @context.lat = attr_hash['lat']   if attr_hash['lat']
     @context.lon = attr_hash['lon']   if attr_hash['lon']
     @context.lon = attr_hash['zoom']  if attr_hash['zoom']
+  end
+
+  def _start_bounds(attr_hash)
+    @bounding_box = Rosemary::BoundingBox.new(attr_hash)
   end
 
 end
