@@ -3,7 +3,7 @@
 [![Gem Version](https://fury-badge.herokuapp.com/rb/rosemary.png)](http://badge.fury.io/rb/rosemary)
 [![Build Status](https://travis-ci.org/sozialhelden/rosemary.png?branch=master)](https://travis-ci.org/sozialhelden/rosemary)
 [![Dependency Status](https://gemnasium.com/sozialhelden/rosemary.png)](https://gemnasium.com/sozialhelden/rosemary)
-[![Coverage Status](https://coveralls.io/repos/sozialhelden/rosemary/badge.png)](https://coveralls.io/r/sozialhelden/rosemary)
+[![Coverage Status](https://codeclimate.com/github/sozialhelden/rosemary/badges/coverage.svg)](https://codeclimate.com/github/sozialhelden/rosemary/coverage)
 [![Code Climate](https://codeclimate.com/github/sozialhelden/rosemary.png)](https://codeclimate.com/github/sozialhelden/rosemary)
 [![License](http://img.shields.io/license/MIT.png?color=green) ](https://github.com/sozialhelden/rosemary/blob/master/LICENSE)
 [![Gittip ](http://img.shields.io/gittip/sozialhelden.png)](https://gittip.com/sozialhelden)
