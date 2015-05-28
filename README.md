@@ -1,12 +1,12 @@
 # Rosemary: OpenStreetMap for Ruby
 
-[![Gem Version](https://fury-badge.herokuapp.com/rb/rosemary.png)](http://badge.fury.io/rb/rosemary)
-[![Build Status](https://travis-ci.org/sozialhelden/rosemary.png?branch=master)](https://travis-ci.org/sozialhelden/rosemary)
+[![Gem Version](https://badge.fury.io/rb/rosemary.svg)](http://badge.fury.io/rb/rosemary)
+[![Build Status](https://travis-ci.org/sozialhelden/rosemary.svg?branch=master)](https://travis-ci.org/sozialhelden/rosemary)
 [![Dependency Status](https://gemnasium.com/sozialhelden/rosemary.png)](https://gemnasium.com/sozialhelden/rosemary)
 [![Coverage Status](https://codeclimate.com/github/sozialhelden/rosemary/badges/coverage.svg)](https://codeclimate.com/github/sozialhelden/rosemary/coverage)
-[![Code Climate](https://codeclimate.com/github/sozialhelden/rosemary.png)](https://codeclimate.com/github/sozialhelden/rosemary)
-[![License](http://img.shields.io/license/MIT.png?color=green) ](https://github.com/sozialhelden/rosemary/blob/master/LICENSE)
-[![Gittip ](http://img.shields.io/gittip/sozialhelden.png)](https://gittip.com/sozialhelden)
+[![Code Climate](https://codeclimate.com/github/sozialhelden/rosemary.svg)](https://codeclimate.com/github/sozialhelden/rosemary)
+[![License](https://img.shields.io/badge/license-MIT-green.svg) ](https://github.com/sozialhelden/rosemary/blob/master/LICENSE)
+[![Gittip ](https://img.shields.io/gittip/sozialhelden.svg)](https://gittip.com/sozialhelden)
 
 This ruby gem is an API client for the current OpenStreetMap [API v0.6](http://wiki.openstreetmap.org/wiki/API_v0.6). It provides easy access to OpenStreetMap (OSM) data.
 
