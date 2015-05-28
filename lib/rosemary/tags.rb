@@ -4,6 +4,10 @@ module Rosemary
   # It is a subclass of Hash.
   class Tags < Hash
 
+    def coder
+      @coder ||= HTMLEntities.new
+    end
+
     # Return XML for these tags. This method uses the Builder library.
     # The only parameter ist the builder object.
     def to_xml(options = {})
@@ -11,7 +15,7 @@ module Rosemary
       xml.instruct! unless options[:skip_instruct]
       each do |key, value|
         # Remove leading and trailing whitespace from tag values
-        xml.tag(:k => key, :v => value.strip) unless value.blank?
+        xml.tag(:k => key, :v => coder.decode(value.strip)) unless value.blank?
       end unless empty?
     end
 

@@ -16,6 +16,10 @@ class Rosemary::Parser < HTTParty::Parser
     end
   end
 
+  def coder
+    @coder ||= HTMLEntities.new
+  end
+
   def xml
     # instead of using
     # LibXML::XML::default_substitute_entities = true
@@ -158,7 +162,7 @@ class Rosemary::Parser < HTTParty::Parser
     if respond_to?(:tag)
       return unless tag(@context, attr_hash['k'], attr_value['v'])
     end
-    @context.tags.merge!(attr_hash['k'] => attr_hash['v'])
+    @context.tags.merge!(attr_hash['k'] => coder.decode(attr_hash['v']))
   end
 
   def _member(attr_hash)

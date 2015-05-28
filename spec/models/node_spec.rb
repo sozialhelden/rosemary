@@ -104,10 +104,21 @@ describe Node do
     expect(subject.to_xml).not_to match /k=\"wheelchair\"/
   end
 
-  it "should properly escape ampersands" do
+  it "should properly encode ampersands" do
     subject.name = "foo & bar"
     expect(subject.to_xml).to match "foo &amp; bar"
   end
+
+  it "should not double encode ampersands" do
+    subject.name = "foo &amp; bar"
+    expect(subject.to_xml).to match "foo &amp; bar"
+  end
+
+  it "should fix double encoded ampersands" do
+    subject.name = "foo &#38; bar"
+    expect(subject.to_xml).to match "foo &amp; bar"
+  end
+
 
   it "should properly strip leading and trailing whitespace" do
     subject.name = " Allice and Bob "

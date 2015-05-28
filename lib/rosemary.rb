@@ -20,6 +20,7 @@ require 'rosemary/oauth_client'
 require 'rosemary/parser'
 require 'rosemary/api'
 require 'oauth'
+require 'htmlentities'
 
 # The Rosemary module just handles class load.
 module Rosemary
