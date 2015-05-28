@@ -1,7 +1,9 @@
 require 'webmock/rspec'
 require 'rosemary'
 require 'libxml'
+require 'codeclimate-test-reporter'
 require 'coveralls'
+CodeClimate::TestReporter.start
 Coveralls.wear!
 
 RSpec::Matchers.define :have_xml do |xpath, text|
