@@ -1,6 +1,5 @@
 require "rosemary/version"
 
-require 'hash'
 require 'active_model'
 require 'rosemary/tags'
 require 'rosemary/element'
