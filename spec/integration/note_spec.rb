@@ -2,10 +2,6 @@ require 'spec_helper'
 include Rosemary
 describe Note do
 
-  before do
-    WebMock.disable_net_connect!
-  end
-
   let(:osm) { Api.new }
 
   def valid_fake_note

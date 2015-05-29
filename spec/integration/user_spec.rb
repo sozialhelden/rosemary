@@ -2,10 +2,6 @@ require 'spec_helper'
 include Rosemary
 describe User do
 
-  before do
-    WebMock.disable_net_connect!
-  end
-
   let :consumer do
     OAuth::Consumer.new(  'a_key', 'a_secret',
                           {

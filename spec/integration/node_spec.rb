@@ -2,10 +2,6 @@ require 'spec_helper'
 include Rosemary
 describe Node do
 
-  before do
-    WebMock.disable_net_connect!
-  end
-
   let(:changeset) { Changeset.new(:id => 1) }
 
   let(:osm) { Api.new }

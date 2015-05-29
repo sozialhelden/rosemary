@@ -1,8 +1,10 @@
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 require 'webmock/rspec'
 require 'rosemary'
 require 'libxml'
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start
+
+WebMock.disable_net_connect!(:allow => "codeclimate.com")
 
 RSpec::Matchers.define :have_xml do |xpath, text|
   match do |body|

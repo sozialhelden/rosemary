@@ -3,10 +3,6 @@ include Rosemary
 
 describe Changeset do
 
-  before do
-    WebMock.disable_net_connect!
-  end
-
   let :osm do
     Api.new
   end
