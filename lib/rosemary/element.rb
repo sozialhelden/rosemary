@@ -58,13 +58,8 @@ module Rosemary
 
     def <=>(another_element)
       attribute_list.each do |attrib|
-        next if self.send(attrib) == another_element.send(attrib)
-
-        if self.send(attrib) < another_element.send(attrib)
-          return -1
-        else
-          return 1
-        end
+        compare_value = self.send(attrib) <=> another_element.send(attrib)
+        return compare_value unless compare_value == 0
       end
       0
     end
