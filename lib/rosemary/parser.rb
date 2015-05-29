@@ -25,7 +25,8 @@ class Rosemary::Parser < HTTParty::Parser
     # LibXML::XML::default_substitute_entities = true
     # we change the options of the xml context:
     ctx = XML::Parser::Context.string(body)
-    ctx.options = XML::Parser::Options::NOENT
+    ctx.encoding = XML::Encoding::UTF_8
+    ctx.options = XML::Parser::Options::NOENT | XML::Parser::Options::NOBLANKS | XML::Parser::Options::RECOVER
     @parser = LibXML::XML::SaxParser.new(ctx)
 
     @parser.callbacks = self
