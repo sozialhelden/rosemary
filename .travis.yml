@@ -1,4 +1,7 @@
 language: ruby
+cache:
+  - bundler
+  - apt
 
 before_install:
   - sudo apt-get install libxml2-dev
