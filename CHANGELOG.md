@@ -31,6 +31,12 @@ v0.4.0 (2014 April 23)
 
 * Add support for the notes API call. Thanks to [Aleksandr Zykov](https://github.com/alexandrz)
 
+v0.3.2 (2013 April 11)
+------
+
+* Strip leading and trailing whitespace of xml tag values
+
+
 v0.1.0
 ------
 
