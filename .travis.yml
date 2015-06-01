@@ -6,15 +6,9 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.0
-
-env:
-  global:
-    - CODECLIMATE_REPO_TOKEN=9b4adcf51537fa2b279a8e9ce948227f84c25288c6758c18f12f4f9e2dd3b0b6
-
 notifications:
   email:
     - info@christophbuente.de
-
 addons:
   code_climate:
     repo_token: 9b4adcf51537fa2b279a8e9ce948227f84c25288c6758c18f12f4f9e2dd3b0b6
