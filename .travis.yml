@@ -1,14 +1,16 @@
 language: ruby
 cache:
-  - bundler
+- bundler
 sudo: false
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.0
+- 1.9.3
+- 2.0.0
+- 2.1.0
 notifications:
   email:
-    - info@christophbuente.de
+  - info@christophbuente.de
+  slack:
+    secure: d2DsWIOCSVXX61HMzbOCzNpJN/mzXMowBHyupFGRx9NDg/cxtyza1mo9q+MgPrsoTODTNYV0G0+5YSeA88crzEto+Blf9gXC4PxJ1ifLla1DdcqSq3+mBBTx07bulomsO5++Isi7q5MYXYzr/X5fDxjret2NYaz/3AAQzYrkuZk=
 addons:
   code_climate:
     repo_token: 9b4adcf51537fa2b279a8e9ce948227f84c25288c6758c18f12f4f9e2dd3b0b6
