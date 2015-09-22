@@ -30,7 +30,7 @@ Put this in your Gemfile
 
 ``` ruby
 # Gemfile
-gem 'rosemary', :git => 'git://github.com/sozialhelden/rosemary'
+gem 'rosemary'
 ```
 
 Then run
