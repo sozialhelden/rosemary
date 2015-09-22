@@ -28,53 +28,65 @@ Due to the license switch, data added in future must be compatible with both the
 
 Put this in your Gemfile
 
-    # Gemfile
-    gem 'rosemary', :git => 'git://github.com/sozialhelden/rosemary'
+``` ruby
+# Gemfile
+gem 'rosemary', :git => 'git://github.com/sozialhelden/rosemary'
+```
 
 Then run
 
-    bundle install
+``` bash
+bundle install
+```
 
 ## Getting started
 
 OK, gimme some code:
 
-    require 'rosemary'
-    api = Rosemary::Api.new
-    node = api.find_node(123)
-     => #<Rosemary::Node:0x1019268d0 @changeset=7836598, @timestamp=Mon Apr 11 19:40:43 UTC 2011, @user="Turleder'n", @tags={}, @uid=289426, @version=4, @lat=59.9502252, @id=123, @lon=10.7899133>
+``` ruby
+require 'rosemary'
+api = Rosemary::Api.new
+node = api.find_node(123)
+ => #<Rosemary::Node:0x1019268d0 @changeset=7836598, @timestamp=Mon Apr 11 19:40:43 UTC 2011, @user="Turleder'n", @tags={}, @uid=289426, @version=4, @lat=59.9502252, @id=123, @lon=10.7899133>
+```
 
 ## Testing your code
 
 You should try your code on the OSM testing server first! You can change the url like this:
 
-    require 'rosemary'
-    Rosemary::Api.base_uri 'http://api06.dev.openstreetmap.org/'
-    api = Rosemary::Api.new
-    api.find_node(123)
+``` ruby
+require 'rosemary'
+Rosemary::Api.base_uri 'http://api06.dev.openstreetmap.org/'
+api = Rosemary::Api.new
+api.find_node(123)
+```
 
 Modification of data is supported too. According to the OSM license every modification to the data has to be done by a registered OSM user account. The user can be authenticated with username and password. But see yourself:
 
-    client = Rosemary::BasicAuthClient.new('osm_user_name', 'password')
+``` ruby
+client = Rosemary::BasicAuthClient.new('osm_user_name', 'password')
 
-    api = Rosemary::Api.new(client)
-    changeset = api.create_changeset("Some meaningful comment")
-    node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
-    api.save(node, changeset)
-    api.close_changeset(changeset)
+api = Rosemary::Api.new(client)
+changeset = api.create_changeset("Some meaningful comment")
+node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
+api.save(node, changeset)
+api.close_changeset(changeset)
+```
 
-Yeah, i can hear you sayin: 'Seriously, do i have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: [OAuth](http://oauth.net/) It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a safe place.
+Yeah, I can hear you sayin: 'Seriously, do I have to provide username and password? Is that secure?' Providing username and password is prone to some security issues, especially because the OSM API does not provide an SSL service. But wait, there is some more in store for you: [OAuth](http://oauth.net/) It's much more secure for the user and your OSM app. But it comes with a price: You have to register an application on http://www.openstreetmap.org. After you have your app registered you get an app key and secret. Keep it in a safe place.
 
-    consumer = OAuth::Consumer.new( 'osm_app_key', 'osm_app_secret',
-                                    :site => 'http://www.openstreetmap.org')
-    access_token = OAuth::AccessToken.new(consumer, 'osm_user_token', 'osm_user_key')
-    client = Rosemary::OauthClient.new(access_token)
+``` ruby
+consumer = OAuth::Consumer.new( 'osm_app_key', 'osm_app_secret',
+                                :site => 'http://www.openstreetmap.org')
+access_token = OAuth::AccessToken.new(consumer, 'osm_user_token', 'osm_user_key')
+client = Rosemary::OauthClient.new(access_token)
 
-    api = Rosemary::Api.new(client)
-    changeset = api.create_changeset("Some meaningful comment")
-    node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
-    api.save(node, changeset)
-    api.close_changeset(changeset)
+api = Rosemary::Api.new(client)
+changeset = api.create_changeset("Some meaningful comment")
+node = Rosemary::Node.new(:lat => 52.0, :lon => 13.4)
+api.save(node, changeset)
+api.close_changeset(changeset)
+```
 
 Every request to the API is now handled by the OauthClient.
 
