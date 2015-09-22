@@ -5,7 +5,7 @@ describe User do
   let :consumer do
     OAuth::Consumer.new(  'a_key', 'a_secret',
                           {
-                            :site => 'http://www.openstreetmap.org',
+                            :site => 'https://www.openstreetmap.org',
                             :request_token_path => '/oauth/request_token',
                             :access_token_path => '/oauth/access_token',
                             :authorize_path => '/oauth/authorize'
@@ -41,13 +41,13 @@ describe User do
   describe '#find:' do
 
     it "should build a User from API response via find_user" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'})
+      stub_request(:get, "https://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'})
       user = osm.find_user
       expect(user.class).to eql User
     end
 
     it "should raise error from api" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 403, :body => "OAuth token doesn't have that capability.", :headers => {'Content-Type' => 'plain/text'})
+      stub_request(:get, "https://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 403, :body => "OAuth token doesn't have that capability.", :headers => {'Content-Type' => 'plain/text'})
       expect {
         osm.find_user
       }.to raise_exception Forbidden

@@ -7,11 +7,11 @@ describe Node do
   let(:osm) { Api.new }
 
   def stub_changeset_lookup
-    stub_request(:get, "http://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
+    stub_request(:get, "https://www.openstreetmap.org/api/0.6/changesets?open=true&user=1234").to_return(:status => 200, :body => valid_fake_changeset, :headers => {'Content-Type' => 'application/xml'} )
   end
 
   def stub_node_lookup
-    stub_request(:get, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
+    stub_request(:get, "https://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => valid_fake_node, :headers => {'Content-Type' => 'application/xml'})
   end
 
   def valid_fake_node
@@ -57,7 +57,7 @@ describe Node do
   describe '#find:' do
 
     def request_url
-      "http://www.openstreetmap.org/api/0.6/node/1234"
+      "https://www.openstreetmap.org/api/0.6/node/1234"
     end
 
     def stubbed_request
@@ -104,7 +104,7 @@ describe Node do
     end
 
     def stub_user_lookup
-      stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      stub_request(:get, "https://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
     end
 
     describe '#create:' do
@@ -118,7 +118,7 @@ describe Node do
       }
 
       def request_url
-        "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/create"
+        "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/create"
       end
 
       def stubbed_request
@@ -184,7 +184,7 @@ describe Node do
       end
 
       it "should save a edited node" do
-        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
         expect(node).to receive(:changeset=)
@@ -193,7 +193,7 @@ describe Node do
       end
 
       it "should set a changeset" do
-        stub_request(:put, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
         osm.save(node, changeset)
         expect(node.changeset).to eql changeset.id
@@ -220,14 +220,14 @@ describe Node do
       end
 
       it "should delete an existing node" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         expect(node).to receive(:changeset=)
         new_version = osm.destroy(node, changeset)
         expect(new_version).to eql 43 # new version number
       end
 
       it "should raise an error if node to be deleted is still part of a way" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 400, :body => 'Version does not match current database version', :headers => {'Content-Type' => 'text/plain'})
         expect {
           response = osm.destroy(node, changeset)
           expect(response).to eql "Version does not match current database version"
@@ -235,7 +235,7 @@ describe Node do
       end
 
       it "should raise an error if node cannot be found" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 404, :body => 'Node cannot be found', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 404, :body => 'Node cannot be found', :headers => {'Content-Type' => 'text/plain'})
         expect {
           response = osm.destroy(node, changeset)
           expect(response).to eql "Node cannot be found"
@@ -243,7 +243,7 @@ describe Node do
       end
 
       it "should raise an error if there is a conflict" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 409, :body => 'Node has been deleted in this changeset', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 409, :body => 'Node has been deleted in this changeset', :headers => {'Content-Type' => 'text/plain'})
         expect {
           response = osm.destroy(node, changeset)
           expect(response).to eql "Node has been deleted in this changeset"
@@ -251,7 +251,7 @@ describe Node do
       end
 
       it "should raise an error if the node is already delted" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 410, :body => 'Node has been deleted', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 410, :body => 'Node has been deleted', :headers => {'Content-Type' => 'text/plain'})
         expect {
           response = osm.destroy(node, changeset)
           expect(response).to eql "Node has been deleted"
@@ -259,7 +259,7 @@ describe Node do
       end
 
       it "should raise an error if the node is part of a way" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 412, :body => 'Node 123 is still used by way 456', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 412, :body => 'Node 123 is still used by way 456', :headers => {'Content-Type' => 'text/plain'})
         expect {
           response = osm.destroy(node, changeset)
           expect(response).to eql "Node 123 is still used by way 456"
@@ -267,7 +267,7 @@ describe Node do
       end
 
       it "should set the changeset an existing node" do
-        stub_request(:delete, "http://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://a_username:a_password@www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.changeset = nil
         new_version = osm.destroy(node, changeset)
         expect(node.changeset).to eql changeset.id
@@ -280,7 +280,7 @@ describe Node do
     let :consumer do
       OAuth::Consumer.new(  'a_key', 'a_secret',
                             {
-                              :site => 'http://www.openstreetmap.org',
+                              :site => 'https://www.openstreetmap.org',
                               :request_token_path => '/oauth/request_token',
                               :access_token_path => '/oauth/access_token',
                               :authorize_path => '/oauth/authorize'
@@ -297,7 +297,7 @@ describe Node do
     end
 
     def stub_user_lookup
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      stub_request(:get, "https://www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
     end
 
     describe '#create:' do
@@ -306,7 +306,7 @@ describe Node do
       end
 
       def request_url
-        "http://www.openstreetmap.org/api/0.6/node/create"
+        "https://www.openstreetmap.org/api/0.6/node/create"
       end
 
       def stubbed_request
@@ -368,7 +368,7 @@ describe Node do
       end
 
       it "should save a edited node" do
-        stub_request(:put, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:put, "https://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         node.tags['amenity'] = 'restaurant'
         node.tags['name'] = 'Il Tramonto'
         expect(node).to receive(:changeset=)
@@ -390,7 +390,7 @@ describe Node do
       end
 
       it "should delete an existing node" do
-        stub_request(:delete, "http://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
+        stub_request(:delete, "https://www.openstreetmap.org/api/0.6/node/123").to_return(:status => 200, :body => '43', :headers => {'Content-Type' => 'text/plain'})
         expect(node).to receive(:changeset=)
         expect {
           # Delete is not implemented using oauth

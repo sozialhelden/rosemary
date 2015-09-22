@@ -60,7 +60,7 @@ describe BoundingBox do
 
   describe '#find:' do
     it "should find an array of Ways, Nodes and Relations from the API response via find_boundary" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/map?bbox=-122.035988,37.38554,-122.00948,37.411677").to_return(:status => 200, :body => valid_fake_boundary, :headers => {'Content-Type' => 'application/xml'})
+      stub_request(:get, "https://www.openstreetmap.org/api/0.6/map?bbox=-122.035988,37.38554,-122.00948,37.411677").to_return(:status => 200, :body => valid_fake_boundary, :headers => {'Content-Type' => 'application/xml'})
       boundary = osm.find_bounding_box(-122.035988,37.38554,-122.00948,37.411677)
 
       expect(boundary.class).to eql BoundingBox
@@ -81,7 +81,7 @@ describe BoundingBox do
 
   describe '#xml:' do
     it "should produce an xml that is equivalent to the parsed one" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/map?bbox=-122.035988,37.38554,-122.00948,37.411677").to_return(:status => 200, :body => valid_fake_boundary, :headers => {'Content-Type' => 'application/xml'})
+      stub_request(:get, "https://www.openstreetmap.org/api/0.6/map?bbox=-122.035988,37.38554,-122.00948,37.411677").to_return(:status => 200, :body => valid_fake_boundary, :headers => {'Content-Type' => 'application/xml'})
       boundary = osm.find_bounding_box(-122.035988,37.38554,-122.00948,37.411677)
 
       xml = boundary.to_xml

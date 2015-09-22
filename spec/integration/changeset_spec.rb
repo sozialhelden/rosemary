@@ -63,7 +63,7 @@ describe Changeset do
   describe '#find:' do
 
     def request_url
-      "http://www.openstreetmap.org/api/0.6/changeset/10"
+      "https://www.openstreetmap.org/api/0.6/changeset/10"
     end
 
     def stubbed_request
@@ -87,7 +87,7 @@ describe Changeset do
   describe '#create' do
 
     def request_url
-      "http://a_username:a_password@www.openstreetmap.org/api/0.6/changeset/create"
+      "https://a_username:a_password@www.openstreetmap.org/api/0.6/changeset/create"
     end
 
     def stub_create_request
@@ -132,7 +132,7 @@ describe Changeset do
   describe '#find_for_user' do
 
     def request_url
-      "http://www.openstreetmap.org/api/0.6/changesets?user=1234"
+      "https://www.openstreetmap.org/api/0.6/changesets?user=1234"
     end
 
     def stubbed_request
@@ -140,7 +140,7 @@ describe Changeset do
     end
 
     let! :stub_user_lookup do
-      stub_request(:get, "http://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
+      stub_request(:get, "https://a_username:a_password@www.openstreetmap.org/api/0.6/user/details").to_return(:status => 200, :body => valid_fake_user, :headers => {'Content-Type' => 'application/xml'} )
     end
 
     it "should not find changeset for user if user has none" do

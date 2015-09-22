@@ -30,7 +30,7 @@ describe Way do
   describe '#find:' do
 
     it "should build a Way from API response via get_way" do
-      stub_request(:get, "http://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
+      stub_request(:get, "https://www.openstreetmap.org/api/0.6/way/1234").to_return(:status => 200, :body => valid_fake_way, :headers => {'Content-Type' => 'application/xml'})
       way = osm.find_way(1234)
       expect(way.class).to eql Way
       expect(way.nodes).to include(15735246)

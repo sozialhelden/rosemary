@@ -9,9 +9,9 @@ describe Note do
     <osm version="0.6" generator="OpenStreetMap server">
     <note lon="102.2205" lat="2.1059">
       <id>174576</id>
-      <url>http://www.openstreetmap.org/api/0.6/notes/174576</url>
-      <comment_url>http://www.openstreetmap.org/api/0.6/notes/174576/comment</comment_url>
-      <close_url>http://www.openstreetmap.org/api/0.6/notes/174576/close</close_url>
+      <url>https://www.openstreetmap.org/api/0.6/notes/174576</url>
+      <comment_url>https://www.openstreetmap.org/api/0.6/notes/174576/comment</comment_url>
+      <close_url>https://www.openstreetmap.org/api/0.6/notes/174576/close</close_url>
       <date_created>2014-05-26 16:00:04 UTC</date_created>
       <status>open</status>
       <comments>
@@ -19,7 +19,7 @@ describe Note do
           <date>2014-05-26 16:00:04 UTC</date>
           <uid>2044077</uid>
           <user>osmthis</user>
-          <user_url>http://www.openstreetmap.org/user/osmthis</user_url>
+          <user_url>https://www.openstreetmap.org/user/osmthis</user_url>
           <action>opened</action>
           <text>Test note</text>
           <html>&lt;p&gt;Test note&lt;/p&gt;</html>
@@ -39,7 +39,7 @@ describe Note do
     describe '#create_note:' do
 
       def request_url
-        "http://a_username:a_password@www.openstreetmap.org/api/0.6/notes?lat=2.1059&lon=102.2205&text=Test%20note"
+        "https://a_username:a_password@www.openstreetmap.org/api/0.6/notes?lat=2.1059&lon=102.2205&text=Test%20note"
       end
 
       def stubbed_request

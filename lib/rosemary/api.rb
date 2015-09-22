@@ -19,7 +19,7 @@ module Rosemary
     API_VERSION = "0.6".freeze
 
     # the default base URI for the API
-    base_uri "http://www.openstreetmap.org"
+    base_uri "https://www.openstreetmap.org"
     #base_uri "http://api06.dev.openstreetmap.org/api/#{API_VERSION}"
 
     # Make sure the request don't run forever
